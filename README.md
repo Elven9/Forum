@@ -1,48 +1,29 @@
-# Software Studio 2019 Spring Midterm Project
-## Notice
-* Replace all [xxxx] to your answer
+# midterm_project
 
-## Topic
-* Project Name : [xxxx]
-* Key functions (add/delete)
-    1. [xxxx]
-    
-* Other functions (add/delete)
-    1. [xxxx]
-    2. [xxxx]
-    3. [xxxx]
+## Project setup
+```
+npm install
+```
 
-## Basic Components
-|Component|Score|Y/N|
-|:-:|:-:|:-:|
-|Membership Mechanism|20%|N|
-|Firebase Page|5%|N|
-|Database|15%|N|
-|RWD|15%|N|
-|Topic Key Function|15%|N|
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-## Advanced Components
-|Component|Score|Y/N|
-|:-:|:-:|:-:|
-|Third-Party Sign In|2.5%|N|
-|Chrome Notification|5%|N|
-|Use CSS Animation|2.5%|N|
-|Security Report|5%|N|
+### Compiles and minifies for production
+```
+npm run build
+```
 
-## Website Detail Description
+### Run your tests
+```
+npm run test
+```
 
-# 作品網址：[xxxx]
+### Lints and fixes files
+```
+npm run lint
+```
 
-# Components Description : 
-1. [xxxx] : [xxxx]
-2. [xxxx] : [xxxx]
-3. [xxxx] : [xxxx]
-...
-
-# Other Functions Description(1~10%) : 
-1. [xxxx] : [xxxx]
-2. [xxxx] : [xxxx]
-3. [xxxx] : [xxxx]
-...
-
-## Security Report (Optional)
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
