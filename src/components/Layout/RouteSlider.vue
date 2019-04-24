@@ -1,6 +1,5 @@
 <template>
-  <div>
-
+  <div class="slider-container">
   </div>
 </template>
 
@@ -11,5 +10,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$route-slider-width: 160px;
 
+.slider-container {
+  height: 100%;
+  width: $route-slider-width;
+}
 </style>

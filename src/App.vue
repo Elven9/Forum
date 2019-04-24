@@ -1,7 +1,12 @@
 <template>
   <div id="app">
+    <div class="header">
+      <div id="route-slider-openner"></div>
+      <img src="~assets/Layout/main-icon-64x64.svg" alt="main-icon">
+      <span class="header-tag-content">Forum</span>
+    </div>
     <!-- Construct Layout -->
-    <div class="most-outer-container">
+    <div class="outer-container">
       <div class="route-slider"><RouteSlider/></div>
       <div class="main-view"><router-view/></div>
       <div class="user-info"><UserInfo/></div>
@@ -23,80 +28,92 @@ export default {
 
 
 <style lang="scss" scoped>
-$route-slider-width: 260px;
+$slider-width: 160px;
 $icon-width: 65px;
 $icon-offset: 10px;
+$header-height: 60px;
 
-.most-outer-container {
-  height: 100vh;
+.header {
+  height: $header-height;
+  border-bottom: solid 1px rgba(128, 128, 128, 0.5);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  img {
+    margin-left: 15px;
+    width: 40px;
+    height: 40px;
+  }
+
+  span {
+    margin-left: 15px;
+    font-size: 20px;
+    font-weight: 200;
+    color: black;
+  }
+}
+
+.outer-container {
+  height: calc(100vh - #{$header-height});
   display: flex;
   flex-direction: row;
   width: 100%;
 
   .route-slider {
-    height: 100%;
-    width: $route-slider-width;
-    background-color: bisque;
+    height: calc(100vh - #{$header-height});
+    position: absolute;
+    top: $header-height;
+    left: 0px;
+    z-index: 2;
   }
 
   .main-view {
     height: 100%;
-    width: calc(100% - #{$route-slider-width} - #{$icon-width});
+    width: calc(100% - #{$slider-width});
+    margin-left: $slider-width;
   }
-  
+
   .user-info {
-    height: $icon-width;
-    width: $icon-width;
-    background-color: antiquewhite;
     position: absolute;
-    top: $icon-offset;
-    right: $icon-offset;
-    z-index: 1;
+    top: $header-height;
+    right: -1 * $slider-width;
+    z-index: 2;
   }
 }
 
-@media (min-width: 415px) and (max-width: 1024px) {
-  .most-outer-container {
+@media (max-width: 1024px) and (min-width: 415px) {
+  .outer-container {
     .route-slider {
-      position: absolute;
-      width: $icon-width;
-      height: $icon-width;
-      top: $icon-offset;
-      left: $icon-offset;
-      z-index: 1;
+      left: -1 * $slider-width;
     }
 
     .main-view {
       width: 100%;
+      margin-left: 0px;
     }
   }
 }
 
 @media (max-width: 414px) {
-  $icon-width: 50px;
-  $icon-offset: 5px;
+  $slider-width: 100%;
 
-  .most-outer-container {
+  .outer-container {
     .route-slider {
-      position: absolute;
-      width: $icon-width;
-      height: $icon-width;
-      top: $icon-offset;
-      left: $icon-offset;
-      z-index: 1;
+      left: -1 * $slider-width;
     }
 
     .main-view {
       width: 100%;
+      margin-left: 0px;
     }
 
     .user-info {
-      height: $icon-width;
-      width: $icon-width;
       position: absolute;
-      top: $icon-offset;
-      right: $icon-offset;
-      z-index: 1;
+      top: $header-height;
+      right: -1 * $slider-width;
+      z-index: 2;
     }
   }
 }
