@@ -6,7 +6,7 @@
           <img src="~/assets/Layout/open-menu-icon.svg" alt="">
         </div>
         <img src="~assets/Layout/main-icon.svg" alt="main-icon">
-        <span class="header-tag-content">Forumas</span>
+        <span class="header-tag-content">फोरम Forumas المنتدى</span>
       </div>
       <div class="header-right">
         <div class="route-slider-openner">
