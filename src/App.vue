@@ -1,9 +1,18 @@
 <template>
   <div id="app">
     <div class="header">
-      <div id="route-slider-openner"></div>
-      <img src="~assets/Layout/main-icon-64x64.svg" alt="main-icon">
-      <span class="header-tag-content">Forum</span>
+      <div class="header-left">
+        <div v-if="windowWidth <= 1024" class="route-slider-openner">
+          <img src="~/assets/Layout/open-menu-icon.svg" alt="">
+        </div>
+        <img src="~assets/Layout/main-icon.svg" alt="main-icon">
+        <span class="header-tag-content">Forumas</span>
+      </div>
+      <div class="header-right">
+        <div class="route-slider-openner">
+          <img src="~/assets/Layout/group.svg" alt="user">
+        </div>
+      </div>
     </div>
     <!-- Construct Layout -->
     <div class="outer-container">
@@ -19,9 +28,25 @@ import RouteSlider from 'components/Layout/RouteSlider';
 import UserInfo from 'components/Layout/UserInfo';
 
 export default {
+  data() {
+    return {
+      windowWidth: window.innerWidth,
+
+      // event listener
+      _resizeHandler: null
+    }
+  },
   components: {
     RouteSlider,
     UserInfo
+  },
+  mounted() {
+    // Add Handler to Data For Destroing.
+    this._resizeHandler = () => { this.windowWidth = window.innerWidth; }
+    window.addEventListener('resize', this._resizeHandler);
+  },
+  beforeDestroy() {
+    window.removeEventListener(this._resizeHandler);
   }
 }
 </script>
@@ -31,9 +56,10 @@ export default {
 $slider-width: 160px;
 $icon-width: 65px;
 $icon-offset: 10px;
-$header-height: 60px;
+$header-height: 70px;
 
 .header {
+  width: 100%;
   height: $header-height;
   border-bottom: solid 1px rgba(128, 128, 128, 0.5);
   display: flex;
@@ -41,17 +67,65 @@ $header-height: 60px;
   justify-content: flex-start;
   align-items: center;
 
-  img {
-    margin-left: 15px;
-    width: 40px;
-    height: 40px;
+  .header-left {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    .route-slider-openner {
+      border-right: solid 1px rgba(128, 128, 128, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: $header-height;
+
+      img {
+        margin: 0;
+        width: calc(#{$header-height} - 30px);
+        height: auto;
+      }
+    }
+
+    img {
+      margin-left: 15px;
+      width: 40px;
+      height: auto;
+    }
+
+    span {
+      margin-left: 15px;
+      font-size: 20px;
+      font-weight: 200;
+      color: black;
+    }
   }
 
-  span {
-    margin-left: 15px;
-    font-size: 20px;
-    font-weight: 200;
-    color: black;
+  .header-right {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    .route-slider-openner {
+      border-left: solid 1px rgba(128, 128, 128, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: $header-height;
+
+      img {
+        margin: 0;
+        width: calc(#{$header-height} - 30px);
+        height: auto;
+      }
+    }
   }
 }
 

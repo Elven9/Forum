@@ -18,6 +18,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 // Setup Firebase
 const firebase = require('firebase/app');
+
+// Require For Side Effect.
 require('firebase/firestore');
 require("firebase/auth");
 
