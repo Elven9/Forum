@@ -165,7 +165,6 @@ $user-info-width: 200px;
       z-index: 2;
       transition: all 0.8s;
       transition-timing-function: ease;
-      background-color: bisque;
     }
 
     .main-view {
