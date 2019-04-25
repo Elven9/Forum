@@ -2,23 +2,23 @@
   <div id="app">
     <div class="header">
       <div class="header-left">
-        <div v-if="windowWidth <= 1024" class="route-slider-openner">
+        <div @click="toggleSlider" v-if="windowWidth <= 1024" class="route-slider-openner">
           <img src="~/assets/Layout/open-menu-icon.svg" alt="">
         </div>
         <img src="~assets/Layout/main-icon.svg" alt="main-icon">
-        <span class="header-tag-content">फोरम Forumas المنتدى</span>
+        <span class="header-tag-content">फोरम Forumas</span>
       </div>
       <div class="header-right">
-        <div class="route-slider-openner">
+        <div @click="toggleUser" class="route-slider-openner">
           <img src="~/assets/Layout/group.svg" alt="user">
         </div>
       </div>
     </div>
     <!-- Construct Layout -->
     <div class="outer-container">
-      <div class="route-slider"><RouteSlider/></div>
+      <div ref="slider" @click="closeSlider" class="route-slider"><RouteSlider/></div>
       <div class="main-view"><router-view/></div>
-      <div class="user-info"><UserInfo/></div>
+      <div ref="user-info" @click="closeUser"  class="user-info"><UserInfo/></div>
     </div>
   </div>
 </template>
@@ -33,7 +33,26 @@ export default {
       windowWidth: window.innerWidth,
 
       // event listener
-      _resizeHandler: null
+      resizeHandler: null
+    }
+  },
+  methods: {
+    toggleSlider() {
+      // Change Left Value
+      this.$refs.slider.style.left = this.$refs.slider.style.left !== '0px' ? '0px' : window.innerWidth > 414 ? '-160px' : '-100vw';
+    },
+    closeSlider() {
+      // Disable Click if Width > 1024
+      if (window.innerWidth > 1024) return;
+      // Change Left Value
+      this.$refs.slider.style.left = window.innerWidth > 414 ? '-160px' : '-100vw';
+    },
+    toggleUser() {
+      // Change Right Value
+      this.$refs['user-info'].style.right = this.$refs['user-info'].style.right !== '0px' ? '0px' : window.innerWidth > 414 ? '-200px' : '-100vw';
+    },
+    closeUser() {
+      this.$refs['user-info'].style.right = window.innerWidth > 414 ? '-200px' : '-100vw';
     }
   },
   components: {
@@ -42,11 +61,11 @@ export default {
   },
   mounted() {
     // Add Handler to Data For Destroing.
-    this._resizeHandler = () => { this.windowWidth = window.innerWidth; }
-    window.addEventListener('resize', this._resizeHandler);
+    this.resizeHandler = () => { this.windowWidth = window.innerWidth; }
+    window.addEventListener('resize', this.resizeHandler);
   },
   beforeDestroy() {
-    window.removeEventListener(this._resizeHandler);
+    window.removeEventListener(this.resizeHandler);
   }
 }
 </script>
@@ -57,137 +76,162 @@ $slider-width: 160px;
 $icon-width: 65px;
 $icon-offset: 10px;
 $header-height: 70px;
+$user-info-width: 200px;
 
-.header {
-  width: 100%;
-  height: $header-height;
-  border-bottom: solid 1px rgba(128, 128, 128, 0.5);
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+#app {
+  height: 100vh;
 
-  .header-left {
-    height: 100%;
-    width: 50%;
+  .header {
+    width: 100%;
+    height: $header-height;
+    border-bottom: solid 1px rgba(128, 128, 128, 0.5);
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
 
-    .route-slider-openner {
-      border-right: solid 1px rgba(128, 128, 128, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .header-left {
       height: 100%;
-      width: $header-height;
+      width: 50%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+
+      .route-slider-openner {
+        border-right: solid 1px rgba(128, 128, 128, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        min-width: $header-height;
+
+        img {
+          margin: 0;
+          width: calc(#{$header-height} - 30px);
+          height: auto;
+        }
+      }
 
       img {
-        margin: 0;
-        width: calc(#{$header-height} - 30px);
+        margin-left: 15px;
+        width: 40px;
         height: auto;
+      }
+
+      span {
+        margin-left: 15px;
+        font-size: 20px;
+        font-weight: 200;
+        color: black;
       }
     }
 
-    img {
-      margin-left: 15px;
-      width: 40px;
-      height: auto;
-    }
-
-    span {
-      margin-left: 15px;
-      font-size: 20px;
-      font-weight: 200;
-      color: black;
-    }
-  }
-
-  .header-right {
-    height: 100%;
-    width: 50%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-
-    .route-slider-openner {
-      border-left: solid 1px rgba(128, 128, 128, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .header-right {
       height: 100%;
-      width: $header-height;
+      width: 50%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
 
-      img {
-        margin: 0;
-        width: calc(#{$header-height} - 30px);
-        height: auto;
+      .route-slider-openner {
+        border-left: solid 1px rgba(128, 128, 128, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        min-width: $header-height;
+
+        img {
+          margin: 0;
+          width: calc(#{$header-height} - 30px);
+          height: auto;
+        }
       }
     }
   }
-}
 
-.outer-container {
-  height: calc(100vh - #{$header-height});
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-
-  .route-slider {
+  .outer-container {
+    position: relative;
     height: calc(100vh - #{$header-height});
-    position: absolute;
-    top: $header-height;
-    left: 0px;
-    z-index: 2;
-  }
+    width: 100%;
+    overflow: hidden;
 
-  .main-view {
-    height: 100%;
-    width: calc(100% - #{$slider-width});
-    margin-left: $slider-width;
-  }
+    .route-slider {
+      height: 100%;
+      position: absolute;
+      left: 0px;
+      z-index: 2;
+      transition: all 0.8s;
+      transition-timing-function: ease;
+      background-color: bisque;
+    }
 
-  .user-info {
-    position: absolute;
-    top: $header-height;
-    right: -1 * $slider-width;
-    z-index: 2;
+    .main-view {
+      height: 100%;
+      position: absolute;
+      left: $slider-width;
+      width: calc(100% - #{$slider-width});
+    }
+
+    .user-info {
+      height: 100%;
+      position: absolute;
+      right: -1 * $user-info-width;
+      z-index: 2;
+      transition: all 0.8s;
+      transition-timing-function: ease;
+      background-color: aqua;
+    }
   }
 }
 
 @media (max-width: 1024px) and (min-width: 415px) {
-  .outer-container {
-    .route-slider {
-      left: -1 * $slider-width;
-    }
+  #app {
+    .outer-container {
+      .route-slider {
+        left: -1 * $slider-width;
+      }
 
-    .main-view {
-      width: 100%;
-      margin-left: 0px;
+      .main-view {
+        width: 100%;
+        left: 0px;
+      }
     }
   }
 }
 
 @media (max-width: 414px) {
-  $slider-width: 100%;
+  $slider-width: 100vw;
 
-  .outer-container {
-    .route-slider {
-      left: -1 * $slider-width;
+  #app {
+    .header {
+      .header-left {
+        width: 80%;
+      }
+      .header-right {
+        width: 20%;
+      }
     }
 
-    .main-view {
-      width: 100%;
-      margin-left: 0px;
-    }
+    .outer-container {
+      .route-slider {
+        top: 0px;
+        left: -1 * $slider-width;
+      }
 
-    .user-info {
-      position: absolute;
-      top: $header-height;
-      right: -1 * $slider-width;
-      z-index: 2;
+      .main-view {
+        width: 100%;
+        left: 0px;
+      }
+
+      .user-info {
+        height: 100vh;
+        position: absolute;
+        top: 0px;
+        right: -1 * 100vw;
+      }
     }
   }
 }

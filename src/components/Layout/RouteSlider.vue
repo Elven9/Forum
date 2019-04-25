@@ -16,4 +16,10 @@ $route-slider-width: 160px;
   height: 100%;
   width: $route-slider-width;
 }
+
+@media (max-width: 414px) {
+  .slider-container {
+    width: 100vw;
+  }
+}
 </style>
