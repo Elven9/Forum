@@ -38,6 +38,8 @@ export default {
   },
   methods: {
     toggleSlider() {
+      // Close user if open
+      if (window.innerWidth <= 414 && this.$refs['user-info'].style.right === '0px') this.closeUser();
       // Change Left Value
       this.$refs.slider.style.left = this.$refs.slider.style.left !== '0px' ? '0px' : window.innerWidth > 414 ? '-160px' : '-100vw';
     },
@@ -48,6 +50,8 @@ export default {
       this.$refs.slider.style.left = window.innerWidth > 414 ? '-160px' : '-100vw';
     },
     toggleUser() {
+      // Close Route If Open
+      if (window.innerWidth <= 414 && this.$refs.slider.style.left === '0px') this.closeSlider();
       // Change Right Value
       this.$refs['user-info'].style.right = this.$refs['user-info'].style.right !== '0px' ? '0px' : window.innerWidth > 414 ? '-200px' : '-100vw';
     },
