@@ -81,6 +81,7 @@ $icon-width: 65px;
 $icon-offset: 10px;
 $header-height: 70px;
 $user-info-width: 200px;
+$main-color: #FFD76B;
 
 #app {
   height: 100vh;
@@ -93,6 +94,7 @@ $user-info-width: 200px;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.7);
 
     .header-left {
       height: 100%;
@@ -127,7 +129,7 @@ $user-info-width: 200px;
         margin-left: 15px;
         font-size: 20px;
         font-weight: 200;
-        color: black;
+        color: $main-color;
       }
     }
 

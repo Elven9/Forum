@@ -40,7 +40,7 @@ $link-font-family: 'Quicksand', sans-serif;
 .slider-container {
   height: 100%;
   width: $route-slider-width;
-  background-color: rgba(0, 0, 0, 0.7); 
+  background-color: rgba(0, 0, 0, 0.7);
   
   .route-container {
     width: 80%;
