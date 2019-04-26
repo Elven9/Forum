@@ -33,7 +33,8 @@ const firebase = require('firebase/app');
 
 // Require For Side Effect.
 require('firebase/firestore');
-require("firebase/auth");
+require('firebase/auth');
+require('firebase/storage');
 
 firebase.initializeApp({
   apiKey: "AIzaSyDyaNjLk9bspxD073OOeOd4oZe1mpk1RAY",
@@ -47,6 +48,7 @@ firebase.initializeApp({
 // Add Firebase to vue instance.
 Vue.prototype.$firebase = firebase;
 Vue.prototype.$db = firebase.firestore();
+Vue.prototype.$storage = firebase.storage();
 
 // Add moment
 Vue.prototype.$moment = moment;

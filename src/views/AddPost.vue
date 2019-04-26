@@ -3,9 +3,9 @@
     <div class="main-container">
       <div class="editor-header">
         <span class="title">新增文章</span>
-        <div class="submit-button"><b-button>確認送出</b-button></div>
+        <div class="submit-button"><b-button @click="submitPost">確認送出</b-button></div>
       </div>
-      <div class="editor-container">
+      <div ref="froala" class="editor-container">
         <froala :tag="'textarea'" :config="config" v-model="content">Init text</froala>
       </div>
     </div>
@@ -20,9 +20,35 @@ export default {
         placeholderText: '隨心所欲的揮灑空間',
         height: Math.floor(window.innerHeight * 0.6),
         fileAllowedTypes: [ 'image/jpeg', 'image/png' ],
-        fileMaxSize: 1024 * 1024 * 10 
+        fileMaxSize: 1024 * 1024 * 10,
+        events: {
+          'froalaEditor.image.loaded': (e, editor, $img) => {
+            this.imgSrcs.push($img.attr('src'));
+          },
+          'froalaEditor.image.removed': (e, editor, $img) => {
+            this.imgSrcs.splice(this.imgSrcs.indexOf($img.attr('src')), 1);
+          }
+        }
       },
-      content: ''
+      content: '',
+      imgSrcs: []
+    }
+  },
+  methods: {
+    async submitPost() {
+      // 確認文章是否為空
+      if (this.content.length === 0) {
+        console.error("Can't Submit Empty Post To Server.");
+        return;
+      }
+      // let newDoc = await this.$db.collection('articles').add({
+      //   content:
+      // });
+
+      // // 處理 Image 文件，上傳到 Storage
+      // for (let url of this.imgSrcs) {
+        
+      // }
     }
   }
 }
