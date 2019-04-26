@@ -171,6 +171,7 @@ $main-color: #FFD76B;
       z-index: 2;
       transition: all 0.8s;
       transition-timing-function: ease;
+      border-right: solid 1px rgba(128, 128, 128, 0.5);
     }
 
     .main-view {
