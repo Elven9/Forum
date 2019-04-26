@@ -35,8 +35,8 @@
             ></b-form-input>
           </b-form-group>
           <b-row>
-            <b-col cols="6"><b-button>登入</b-button></b-col>
-            <b-col cols="6"><b-button>註冊</b-button></b-col>
+            <b-col cols="6"><b-button @click.stop="login">登入</b-button></b-col>
+            <b-col cols="6"><b-button @click.stop="register">註冊</b-button></b-col>
           </b-row>
         </b-card>
       </b-collapse>
@@ -50,24 +50,44 @@ export default {
   data() {
     return {
       account: '',
-      pass: ''
-    }
-  },
-  computed: {
-    isLogin() {
-      return this.$firebase.auth().currentUser;
+      pass: '',
+      isLogin: false
     }
   },
   methods: {
-    login() {
+    async login() {
       // 進行登入的動作
+      try {
+        await this.$firebase.auth().signInWithEmailAndPassword(this.account, this.pass);
+        this.isLogin = true;
+        this.account = '';
+        this.pass = '';
+      } catch (err) {
+        console.error('Login Failed.');
+      }
+    },
+    async register() {
+      // Registerd
+      try {
+        await this.$firebase.auth().createUserWithEmailAndPassword(this.account, this.pass);
+        this.login();
+        this.isLogin = true;
+        this.account = '';
+        this.pass = '';
+      } catch (err) {
+        console.error('Register Failed.');
+      }
     }
+  },
+  mounted() {
+    // 確認目前使用者有無登入
+    if (this.$firebase.auth().currentUser) this.isLogin = true;
   }
 }
 </script>
 
 <style lang="scss" scoped>
-$route-slider-width: 300px;
+$route-slider-width: 350px;
 $main-color: #7c7780;
 
 // Container Common Property
@@ -133,6 +153,10 @@ $main-color: #7c7780;
     #login-with-pass {
       @include collapse-style();
     }    
+  }
+  
+  .user-container-login {
+    @include user-container();
   }
 }
 

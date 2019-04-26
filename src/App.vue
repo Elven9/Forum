@@ -52,10 +52,10 @@ export default {
       // Close Route If Open
       if (window.innerWidth <= 414 && this.$refs.slider.style.left === '0px') this.closeSlider();
       // Change Right Value
-      this.$refs['user-info'].style.right = this.$refs['user-info'].style.right !== '0px' ? '0px' : window.innerWidth > 414 ? '-300px' : '-100vw';
+      this.$refs['user-info'].style.right = this.$refs['user-info'].style.right !== '0px' ? '0px' : window.innerWidth > 414 ? '-350px' : '-100vw';
     },
     closeUser() {
-      this.$refs['user-info'].style.right = window.innerWidth > 414 ? '-300px' : '-100vw';
+      this.$refs['user-info'].style.right = window.innerWidth > 414 ? '-350px' : '-100vw';
     }
   },
   components: {
@@ -79,7 +79,7 @@ $slider-width: 160px;
 $icon-width: 65px;
 $icon-offset: 10px;
 $header-height: 70px;
-$user-info-width: 300px;
+$user-info-width: 350px;
 $main-color: white;
 
 #app {
