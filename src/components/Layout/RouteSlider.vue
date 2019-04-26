@@ -13,13 +13,15 @@
 
 <script>
 // Import Icon Image
-import home from 'assets/Route/home.svg'
+import home from 'assets/Route/home.svg';
+import write from 'assets/Route/writing.svg'
 
 export default {
   data() {
     return {
       routeList: [
-        { name: 'home 首頁', icon: home, link: '/' }
+        { name: '首頁', icon: home, link: '/' },
+        { name: '新增文章', icon: write, link: '/addPost' },
       ]
     }
   }
@@ -28,8 +30,8 @@ export default {
 
 <style lang="scss" scoped>
 $route-slider-width: 160px;
-$main-color: #FFD76B;
-$main-hover-color: #FFE8A8;
+$main-color: #7c7780;
+$main-hover-color: white;
 $route-link-height: 100px;
 $route-link-height-414: 80px;
 $icon-size: 25px;

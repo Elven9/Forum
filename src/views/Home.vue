@@ -2,12 +2,12 @@
   <div class="home-container">
     <div class="home-grid-layout">
       <MessageBlock
-        size="1x1"
+        size="2x2"
         :position="{
           rowStart: 1,
-          rowEnd: 2,
+          rowEnd: 3,
           columnStart: 1,
-          columnEnd: 2
+          columnEnd: 3
         }"
         title="泰式奶茶真好喝"
         briefContent="來去泰國一定要先喝這杯道地的泰式奶茶囉～"
@@ -23,8 +23,16 @@ import MessageBlock from 'components/MessageBlock/index';
 
 export default {
   name: 'home',
+  data() {
+    return {
+      messages: []
+    }
+  },
   components: {
     MessageBlock
+  },
+  mounted() {
+    
   }
 }
 </script>
