@@ -19,6 +19,16 @@
         </div>
       </div>
     </div>
+    <!-- 2x2 Block Style -->
+    <div v-if="size === '2x2'" class="block-content-2x2">
+      <div class="background-mask">
+        <span class="title-2x2">{{ title }}</span>
+        <span class="brief-content-2x2">{{ briefContent }}</span>
+        <div class="author">
+          <p>{{ author }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,7 +57,7 @@ export default {
     // Update Background / Avatar
     this.$refs.block.style['background-image'] = `url(${this.background})`;
     this.$refs.block.style['background-blend-mode'] = 'multiply';
-    this.$refs.block.style['background-size'] = this.size === '1x1' ? 'auto 100%' : '100% auto';
+    this.$refs.block.style['background-size'] = this.size !== '1x2' ? 'auto 100%' : '100% auto';
     this.$refs.block.style['background-repeat'] = 'no-repeat';
     this.$refs.block.style['background-position'] = 'center';
   }
@@ -150,6 +160,38 @@ export default {
       .author {
         @include author-default-property();
         height: 30%;
+
+        p {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .block-content-2x2 {
+    width: 100%;
+    height: 100%;
+
+    .background-mask {
+      @include background-mask-and-flex();
+
+      span {
+        @include span-default-property();
+
+        &.title-2x2 {
+          font-size: 20px;
+          height: calc(30% - 10px);
+        }
+
+        &.brief-content-2x2 {
+          font-size: 14px;
+          height: calc(60% - 10px);
+        }
+      }
+
+      .author {
+        @include author-default-property();
+        height: 10%;
 
         p {
           font-size: 16px;

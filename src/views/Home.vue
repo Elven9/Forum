@@ -2,12 +2,12 @@
   <div class="home-container">
     <div class="home-grid-layout">
       <MessageBlock
-        size="1x2"
+        size="1x1"
         :position="{
           rowStart: 1,
           rowEnd: 2,
           columnStart: 1,
-          columnEnd: 3
+          columnEnd: 2
         }"
         title="泰式奶茶真好喝"
         briefContent="來去泰國一定要先喝這杯道地的泰式奶茶囉～"
@@ -62,7 +62,7 @@ $grid-layout-height: 150px;
 }
 
 @media (max-width: 768px) and (min-width: 415px) {
-  $grid-layout-height: 190px;
+  $grid-layout-height: 160px;
   .home-container {
     .home-grid-layout {
       grid-template-columns: repeat(4, 25%);
@@ -72,7 +72,7 @@ $grid-layout-height: 150px;
 }
 
 @media (max-width: 414px) {
-  $grid-layout-height: 200px;
+  $grid-layout-height: 160px;
   .home-container {
     .home-grid-layout {
       grid-template-columns: repeat(2, 50%);
