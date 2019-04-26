@@ -1,7 +1,13 @@
 <template>
   <div class="add-post-container">
     <div class="main-container">
-      <froala :tag="'textarea'" :config="config" v-model="test">Init text</froala>
+      <div class="editor-header">
+        <span class="title">新增文章</span>
+        <div class="submit-button"><b-button>確認送出</b-button></div>
+      </div>
+      <div class="editor-container">
+        <froala :tag="'textarea'" :config="config" v-model="content">Init text</froala>
+      </div>
     </div>
   </div>
 </template>
@@ -11,10 +17,12 @@ export default {
   data() {
     return {
       config: {
-        placeholderText: 'Edit Your Content Here!',
-        charCounterCount: false
+        placeholderText: '隨心所欲的揮灑空間',
+        height: Math.floor(window.innerHeight * 0.6),
+        fileAllowedTypes: [ 'image/jpeg', 'image/png' ],
+        fileMaxSize: 1024 * 1024 * 10 
       },
-      test: ''
+      content: ''
     }
   }
 }
@@ -33,6 +41,37 @@ export default {
     width: 80%;
     height: 100%;
     margin: 0px 10% 0px 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    .editor-header {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+
+      .title {
+        flex-grow: 10;
+        font-size: 36px;
+      }
+      
+      .submit-button {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        button {
+          background-color: rgb(28, 27, 30);
+        }
+      }
+    }
+
+    .editor-container {
+      width: 100%;
+      margin-top: 30px;
+    }
   }
 }
 </style>
