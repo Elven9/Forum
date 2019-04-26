@@ -5,8 +5,7 @@
         <div @click="toggleSlider" v-if="windowWidth <= 1024" class="route-slider-openner">
           <img src="~/assets/Layout/open-menu-icon.svg" alt="">
         </div>
-        <img src="~assets/Layout/main-icon.svg" alt="main-icon">
-        <span class="header-tag-content">फोरम Forumas</span>
+        <span class="header-tag-content">Forumas</span>
       </div>
       <div class="header-right">
         <div @click="toggleUser" class="route-slider-openner">
@@ -81,7 +80,7 @@ $icon-width: 65px;
 $icon-offset: 10px;
 $header-height: 70px;
 $user-info-width: 200px;
-$main-color: #FFD76B;
+$main-color: white;
 
 #app {
   height: 100vh;
@@ -94,7 +93,7 @@ $main-color: #FFD76B;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(28, 27, 30);
 
     .header-left {
       height: 100%;
@@ -128,7 +127,7 @@ $main-color: #FFD76B;
       span {
         margin-left: 15px;
         font-size: 20px;
-        font-weight: 200;
+        font-weight: 300;
         color: $main-color;
       }
     }

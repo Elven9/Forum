@@ -40,7 +40,7 @@ $link-font-family: 'Quicksand', sans-serif;
 .slider-container {
   height: 100%;
   width: $route-slider-width;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(28, 27, 30, 0.9);
   
   .route-container {
     width: 80%;
@@ -69,6 +69,7 @@ $link-font-family: 'Quicksand', sans-serif;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        font-weight: 300;
 
         img {
           margin-top: 20px;

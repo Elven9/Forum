@@ -1,13 +1,31 @@
 <template>
   <div class="home-container">
-    <div class="home-grid-layout"></div>
+    <div class="home-grid-layout">
+      <MessageBlock
+        size="1x2"
+        :position="{
+          rowStart: 1,
+          rowEnd: 2,
+          columnStart: 1,
+          columnEnd: 3
+        }"
+        title="泰式奶茶真好喝"
+        briefContent="來去泰國一定要先喝這杯道地的泰式奶茶囉～"
+        author="Retro"
+        background="https://firebasestorage.googleapis.com/v0/b/software-studio-mid-project.appspot.com/o/architecture-buildings-cars-1095901.jpg?alt=media&token=cd3b74d0-632c-48ad-99e2-8f9b35502d3c"
+      ></MessageBlock>
+    </div>
   </div>
 </template>
 
 <script>
+import MessageBlock from 'components/MessageBlock/index';
 
 export default {
-  name: 'home'
+  name: 'home',
+  components: {
+    MessageBlock
+  }
 }
 </script>
 
@@ -15,9 +33,9 @@ export default {
 $grid-layout-height: 150px;
 
 .home-container {
-  width: calc(101% + 5px);
+  width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(28, 27, 30);
   overflow-y: scroll;
   overflow-x: hidden;
 
