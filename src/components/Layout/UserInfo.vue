@@ -1,7 +1,11 @@
 <template>
   <div class="user-info-c">
     <div v-if="isLogin" class="user-container-login">
-
+      <div class="avatar-container"><img :src="user.avatar" alt="avatar"></div>
+      <span class="name-text">{{ `${user.account.split('@')[0]}, 歡迎光臨` }}</span>
+      <dir class="detail-info">
+        <span>{{ `登入中帳號：${user.account}` }}</span>
+      </dir>
     </div>
     <div v-else class="user-container-logout">
       <img src="~assets/UserInfo/login.svg" alt="login">
@@ -54,6 +58,11 @@ export default {
       account: '',
       pass: '',
       isLogin: false
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.state.userData;
     }
   },
   methods: {
@@ -175,6 +184,39 @@ $background-color: rgba(28, 27, 30, 0.9);
   
   .user-container-login {
     @include user-container();
+
+    .avatar-container {
+      margin-top: 30px;
+      width: 80%;
+      border-radius: 10px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .name-text {
+      margin-top: 10px;
+      font-size: 32px;
+      color: $main-color;
+    }
+
+    .detail-info {
+      width: 80%;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0px;
+
+      span {
+        color: $main-color;
+        font-size: 20px;
+        font-weight: 300;
+      }
+    }
   }
 }
 
