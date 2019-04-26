@@ -89,17 +89,18 @@ export default {
 <style lang="scss" scoped>
 $route-slider-width: 350px;
 $main-color: #7c7780;
+$background-color: rgba(28, 27, 30, 0.9);
 
 // Container Common Property
 @mixin user-container() {
   height: 100%;
   width: 100%;
-  background-color: rgba(28, 27, 30, 0.9);
+  background-color: $background-color;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  border-left: solid $main-color 2px;
+  border-left: solid rgba(128, 128, 128, 0.5) 2px;
 }
 
 // Collapase Style
@@ -107,15 +108,15 @@ $main-color: #7c7780;
   width: 80%;
 
   .card {
-    background-color: rgba(28, 27, 30, 0.9);
+    background-color: $background-color;
     border: none;
 
     .card-body {
-      background-color: rgba(28, 27, 30, 0.9);
+      background-color: $background-color;
       color: $main-color;
 
       button {
-        background-color: rgba(28, 27, 30, 0.9);
+        background-color: $background-color;
         color: $main-color;
         width: calc(100% - 20px);
         margin: 10px 10px 10px 10px;
@@ -144,7 +145,7 @@ $main-color: #7c7780;
     }
 
     button {
-      background-color: rgba(28, 27, 30, 0.9);
+      background-color: $background-color;
       color: $main-color;
       width: 80%;
       margin: 10px 0px 10px 0px;

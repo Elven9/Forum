@@ -38,11 +38,12 @@ $icon-size: 25px;
 $link-font-size: 20px;
 $link-font-size-414: 26px;
 $link-font-family: 'Quicksand', sans-serif;
+$background-color: rgba(28, 27, 30, 0.9);
 
 .slider-container {
   height: 100%;
   width: $route-slider-width;
-  background-color: rgba(28, 27, 30, 0.9);
+  background-color: $background-color;
   
   .route-container {
     width: 80%;

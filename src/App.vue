@@ -171,7 +171,6 @@ $main-color: white;
       transition: all 0.8s;
       transition-timing-function: ease;
       border-right: solid 1px rgba(128, 128, 128, 0.5);
-      background-color: rgb(28, 27, 30);
     }
 
     .main-view {
