@@ -1,6 +1,9 @@
 <template>
   <div class="user-info-c">
-    <div v-if="!isLogin" class="user-container-logout">
+    <div v-if="isLogin" class="user-container-login">
+
+    </div>
+    <div v-else class="user-container-logout">
       <img src="~assets/UserInfo/login.svg" alt="login">
       <span class="login-text">Login 登入</span>
       <b-button v-b-toggle.login-with-pass @click.stop>密碼登入 / 帳號註冊</b-button>
@@ -41,7 +44,6 @@
         </b-card>
       </b-collapse>
     </div>
-    <div v-else class="user-container-login"></div>
   </div>
 </template>
 
@@ -58,18 +60,33 @@ export default {
     async login() {
       // 進行登入的動作
       try {
+        // Login With Firebase
         await this.$firebase.auth().signInWithEmailAndPassword(this.account, this.pass);
+
+        // Get User Content
+        await this.$store.dispatch('getCurrentUser', { vm: this, account: this.account });
+
         this.isLogin = true;
         this.account = '';
         this.pass = '';
       } catch (err) {
+        console.error(err);
         console.error('Login Failed.');
       }
     },
     async register() {
       // Registerd
       try {
+        // Create Account
         await this.$firebase.auth().createUserWithEmailAndPassword(this.account, this.pass);
+
+        // Add User Data to DB
+        await this.$db.collection('/users').add({
+          account: this.account,
+          avatar: ''
+        })
+
+        // Login
         this.login();
         this.isLogin = true;
         this.account = '';
