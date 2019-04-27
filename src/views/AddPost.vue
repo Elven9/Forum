@@ -62,7 +62,7 @@ export default {
       },
       content: '',
       imgSrcs: [],
-      cover: null,
+      cover: '',
       coverInfo: {
         name: '',
         size: '',
@@ -88,6 +88,12 @@ export default {
       // }
     },
     uploadFile() {
+      // If Have Previous Cover, delete it.
+      if (this.cover.length !== 0) { 
+        window.URL.revokeObjectURL(this.cover);
+        this.cover = '';
+      }
+
       // Input 設定
       let newInput = document.createElement('input');
       newInput.type = 'file';
@@ -126,6 +132,12 @@ export default {
       newInput.click();
     },
     async initialDrop(dragEvent) {
+      // If Have Previous Cover, delete it.
+      if (this.cover.length !== 0) { 
+        window.URL.revokeObjectURL(this.cover);
+        this.cover = '';
+      }
+
       // Get Data Transfer Object
       let { dataTransfer } = dragEvent;
       let { items } = dataTransfer;
