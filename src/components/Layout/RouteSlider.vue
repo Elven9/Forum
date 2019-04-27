@@ -20,7 +20,9 @@ export default {
   data() {
     return {
       routeList: [
-        { name: '首頁', icon: home, link: '/' },
+        { name: '泰國版', icon: home, link: '/ThailandBoard' },
+        { name: '台灣版', icon: home, link: '/TaiwanBoard' },
+        { name: 'Gossip 版', icon: home, link: '/Gossip' },
         { name: '新增文章', icon: write, link: '/addPost' },
       ]
     }
