@@ -5,6 +5,35 @@
         <span class="title">新增文章</span>
         <div class="submit-button"><b-button @click="submitPost">確認送出</b-button></div>
       </div>
+      <span class="title">封面圖片</span>
+      <div class="drag-and-drop">
+        <div ref="drop-area" class="drop-area"
+          @drop.prevent="initialDrop"
+          @dragover.prevent>
+          請放入圖片
+        </div>
+        <div class="info-area">
+          <div>
+            <span>圖片名稱：</span>
+            <span>{{ coverInfo.name }}</span>
+          </div>
+          <div>
+            <span>圖片大小：</span>
+            <span>{{ coverInfo.size }}</span>
+          </div>
+          <div>
+            <span>檔案類別：</span>
+            <span>{{ coverInfo.type }}</span>
+          </div>
+        </div>
+      </div>
+      <span class="title">顯示樣式</span>
+      <div class="button-group">
+        <b-button @click="size = '1x1'">1x1</b-button>
+        <b-button @click="size = '1x2'">1x2</b-button>
+        <b-button @click="size = '2x2'">2x2</b-button>
+        <span>目前選擇：{{ size }}</span>
+      </div>
       <div ref="froala" class="editor-container">
         <froala :tag="'textarea'" :config="config" v-model="content">Init text</froala>
       </div>
@@ -31,7 +60,14 @@ export default {
         }
       },
       content: '',
-      imgSrcs: []
+      imgSrcs: [],
+      cover: null,
+      coverInfo: {
+        name: '',
+        size: '',
+        type: '',
+      },
+      size: '1x1'
     }
   },
   methods: {
@@ -49,33 +85,87 @@ export default {
       // for (let url of this.imgSrcs) {
         
       // }
+    },
+    async initialDrop(dragEvent) {
+      // Get Data Transfer Object
+      let { dataTransfer } = dragEvent;
+      let { items } = dataTransfer;
+
+      // Referenct
+      let vm = this;
+
+      // Read File
+      function readFile() {
+        return new Promise((res, rej) => {
+          let reader = new FileReader();
+          let file = items[0].getAsFile();
+
+          if (!file) rej('Drag Item Is Not A File');
+
+          // Update File Info.
+          let { name, size, type } = file;
+          Object.assign(vm.coverInfo, {name, size, type});
+
+          reader.onload = () => {
+            res(reader.result);
+          }
+          reader.readAsDataURL(file);
+        })
+      }
+
+      // Get URL
+      let fileUrl = await readFile();
+
+      // Update to cover
+      this.cover = fileUrl;
+
+      // Render Image
+      this.$refs['drop-area'].innerHTML = "";   // Clear Previous Text.
+      let image = new Image();                  // Create New Image.
+      image.src = fileUrl;                      // Load Image
+      image.style.width = '100%';
+      image.style.height = 'auto';
+      image.onload = () => {
+        // Add Element to Father
+        this.$refs['drop-area'].appendChild(image);
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+$main-color: #7c7780;
+
 .add-post-container {
   background-color: rgb(28, 27, 30);
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
 
   // Global Font Color
   color: white;
 
   .main-container {
     width: 80%;
-    height: 100%;
-    margin: 0px 10% 0px 10%;
+    margin: 0px 10% 30px 10%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
 
+    .title {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
     .editor-header {
       width: 100%;
+      margin: 20px 0px 20px 0px;
       display: flex;
       flex-direction: row;
+      justify-content: center;
+      align-items: center;
 
       .title {
         flex-grow: 10;
@@ -94,9 +184,91 @@ export default {
       }
     }
 
+    .drag-and-drop {
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+
+      .drop-area {
+        width: 50%;
+        height: 300px;
+        border: solid $main-color 2px;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 300px;
+      }
+
+      .info-area {
+        width: 50%;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        div {
+          display: flex;
+          flex-direction: column;
+          margin-left: 20px;
+          
+          span {
+            font-size: 18px;
+            font-weight: 300;
+            color: white;
+          }
+        }
+      }
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 10px;
+
+      button {
+        margin-right: 10px;
+        background-color: rgb(28, 27, 30);
+      }
+    }
+
     .editor-container {
       width: 100%;
-      margin-top: 30px;
+      margin-top: 20px;
+    }
+  }
+}
+
+@media (max-width: 414px) {
+  .add-post-container {
+    .main-container {
+      margin-top: 20px;
+
+      .editor-header {
+        margin: 0px 0px 20px 0px;
+      }
+
+      .drag-and-drop {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 600px;
+
+        .drop-area {
+          width: 100%;
+          height: 300px;
+        }
+
+        .info-area {
+          width: 100%;
+          margin: 20px 0px 20px 0px;
+        }
+      }
     }
   }
 }
