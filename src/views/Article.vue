@@ -37,6 +37,7 @@ export default {
       article: null,
       inputComment: '',
       comment: null,
+      commentSubscribe: null
     }
   },
   computed: {
@@ -57,7 +58,7 @@ export default {
         return;
       };
 
-      if (!this.$firebase.auth().currentUser) {
+      if (!this.user) {
         console.error('請登入後再留言');
         return;
       }
@@ -74,11 +75,19 @@ export default {
     }
   },
   async mounted() {
-    let rawData = await this.$db.collection('/articles').doc(this.$route.path.slice(9)).get();
+    let docRef = this.$db.collection('/articles').doc(this.$route.path.slice(9));
+    let rawData = await docRef.get();
     this.article = rawData.data();
 
-    let commentRaw = await this.$db.collection('/articles').doc(this.$route.path.slice(9)).collection('comments').get();
+    let commentRaw = await docRef.collection('comments').orderBy('created', 'asc').limit(10).get();
     this.comment = commentRaw.docs.map(d => d.data());
+
+    // Add Event
+    this.commentSubscribe = docRef.collection('comments').onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach(c => {
+        if (c.type == 'modified') this.comment.push(c.doc.data());
+      })
+    });
   }
 }
 </script>
@@ -149,6 +158,7 @@ export default {
 
       .card {
         width: 100%;
+        margin: 10px 0px 10px 0px;
 
         .card-body {
           .card-text {
