@@ -65,6 +65,13 @@
         <b-button @click="size = '2x2'">2x2</b-button>
         <span>目前選擇：{{ size }}</span>
       </div>
+      <span class="title">文章分類</span>
+      <div class="button-group">
+        <b-button @click="type = 'ThailandBoard'">泰國版</b-button>
+        <b-button @click="type = 'TaiwanBoard'">台灣版</b-button>
+        <b-button @click="type = 'Gossip'">Gossip 版</b-button>
+        <span>目前選擇：{{ mapType(type) }}</span>
+      </div>
       <div ref="froala" class="editor-container">
         <froala :tag="'textarea'" :config="config" v-model="content">Init text</froala>
       </div>
@@ -103,9 +110,18 @@ export default {
       size: '1x1',
       title: '',
       subTitle: '',
+      type: 'ThailandBoard'
     }
   },
   methods: {
+    mapType(type) {
+      let map = {
+        ThailandBoard: '泰國版',
+        TaiwanBoard: '台灣版',
+        Gossip: 'Gossip 版'
+      }
+      return map[type];
+    },
     async submitPost() {
       // 確認文章是否為空
       if (this.content.length === 0) {
@@ -137,6 +153,7 @@ export default {
         size: this.size,
         title: this.title,
         subTitle: this.subTitle,
+        type: this.type,
         cover: '',
         created: firebase.firestore.FieldValue.serverTimestamp()
       });
