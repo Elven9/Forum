@@ -9,7 +9,8 @@
       <div class="drag-and-drop">
         <div ref="drop-area" class="drop-area"
           @drop.prevent="initialDrop"
-          @dragover.prevent>
+          @dragover.prevent
+          @click="uploadFile">
           請放入圖片
         </div>
         <div class="info-area">
@@ -85,6 +86,44 @@ export default {
       // for (let url of this.imgSrcs) {
         
       // }
+    },
+    uploadFile() {
+      // Input 設定
+      let newInput = document.createElement('input');
+      newInput.type = 'file';
+      newInput.accept = 'image/*';
+      newInput.size = 1;
+
+      // Add Event
+      newInput.addEventListener('change', () => {
+        let reader = new FileReader();
+        let file = newInput.files[0];
+
+        // Update File Info.
+        let { name, size, type } = file;
+        Object.assign(this.coverInfo, {name, size, type});
+
+        reader.readAsDataURL(file);
+
+        reader.addEventListener('load', () => {
+          let fileUrl = reader.result;
+
+          // Add to cover
+          this.cover = fileUrl;
+
+          // Render Image
+          this.$refs['drop-area'].innerHTML = "";   // Clear Previous Text.
+          let image = new Image();                  // Create New Image.
+          image.src = fileUrl;                      // Load Image
+          image.style.width = '100%';
+          image.style.height = 'auto';
+          image.onload = () => {
+            // Add Element to Father
+            this.$refs['drop-area'].appendChild(image);
+          }
+        })
+      })
+      newInput.click();
     },
     async initialDrop(dragEvent) {
       // Get Data Transfer Object
