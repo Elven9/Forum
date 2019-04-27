@@ -4,6 +4,7 @@
       <MessageBlock
         v-for="m in b"
         :key="m.id"
+        :id="m.id"
         :size="m.size"
         :position="{
           rowStart: m.position.rowStart,

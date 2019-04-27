@@ -1,5 +1,5 @@
 <template>
-  <div ref="block" class="message-single-block">
+  <div ref="block" class="message-single-block" @click="toArticle">
     <!-- 1x1 Block Style -->
     <div v-if="size === '1x1'" class="block-content-1x1">
       <div class="background-mask">
@@ -44,6 +44,10 @@ export default {
       type: Object,
       required: true
     },
+    id: {
+      type: String,
+      required: true
+    },
     title: String,
     briefContent: String,
     like: Number,
@@ -53,6 +57,11 @@ export default {
   computed: {
     authorStr() {
       return this.author.split('@')[0];
+    }
+  },
+  methods: {
+    toArticle() {
+      this.$router.push(`/article/${this.id}`);
     }
   },
   mounted() {
@@ -79,6 +88,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  border-radius: 6px;
 }
 
 // Message Block Span Default CSS
@@ -111,8 +121,13 @@ export default {
   width: calc(100% - 20px);
   height: calc(100% - 20px);
   margin: 10px;
+  transition: all 0.5s;
   border-radius: 6px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.39);
+
+  &:hover {
+    box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.5), 0 6px 20px 0 rgba(255, 255, 255, 0.49);
+  }
 
   .block-content-1x1 {
     width: 100%;
