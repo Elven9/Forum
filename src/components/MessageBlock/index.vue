@@ -5,7 +5,7 @@
       <div class="background-mask">
         <span class="title-1x1">{{ title }}</span>
         <div class="author">
-          <p>{{ author }}</p>
+          <p>{{ authorStr }}</p>
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@
         <span class="title-1x2">{{ title }}</span>
         <span class="brief-content-1x2">{{ briefContent }}</span>
         <div class="author">
-          <p>{{ author }}</p>
+          <p>{{ authorStr }}</p>
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
         <span class="title-2x2">{{ title }}</span>
         <span class="brief-content-2x2">{{ briefContent }}</span>
         <div class="author">
-          <p>{{ author }}</p>
+          <p>{{ authorStr }}</p>
         </div>
       </div>
     </div>
@@ -49,6 +49,11 @@ export default {
     like: Number,
     author: String,
     background: String
+  },
+  computed: {
+    authorStr() {
+      return this.author.split('@')[0];
+    }
   },
   mounted() {
     // Update Grid Position

@@ -1,7 +1,7 @@
 <template>
   <div class="user-info-c">
     <div v-if="isLogin" class="user-container-login">
-      <div class="avatar-container"><img :src="user.avatar" alt="avatar"></div>
+      <div v-if="user.avatar !== ''" class="avatar-container"><img :src="user.avatar" alt="avatar"></div>
       <span class="name-text">{{ `${user.account.split('@')[0]}, 歡迎光臨` }}</span>
       <dir class="detail-info">
         <span>{{ `登入中帳號：${user.account}` }}</span>
@@ -97,9 +97,6 @@ export default {
 
         // Login
         this.login();
-        this.isLogin = true;
-        this.account = '';
-        this.pass = '';
       } catch (err) {
         console.error('Register Failed.');
       }

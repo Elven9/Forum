@@ -113,6 +113,14 @@ export default {
       type: 'ThailandBoard'
     }
   },
+  computed: {
+    userData() {
+      return this.$store.state.userData;
+    },
+    userId() {
+      return this.$store.state.userId;
+    }
+  },
   methods: {
     mapType(type) {
       let map = {
@@ -123,6 +131,11 @@ export default {
       return map[type];
     },
     async submitPost() {
+      // 確認使用者是否登入
+      if (!this.userData) {
+        console.error("You Can't Submit Your Article Before You Login.");
+        return;
+      }
       // 確認文章是否為空
       if (this.content.length === 0) {
         console.error("Can't Submit Empty Post To Server.");
@@ -149,6 +162,8 @@ export default {
 
       // 創建文章資料
       let newDoc = await this.$db.collection('articles').add({
+        userId: this.userId,
+        userAccount: this.userData.account,
         content: this.content,
         size: this.size,
         title: this.title,

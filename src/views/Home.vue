@@ -13,7 +13,7 @@
         }"
         :title="m.title"
         :briefContent="m.subTitle"
-        :author="m.author"
+        :author="m.userAccount"
         :background="m.cover"
       ></MessageBlock>
     </div>
@@ -71,7 +71,7 @@ $grid-layout-height: 150px;
 }
 
 @media (max-width: 1024px) and (min-width: 769px) {
-  $grid-layout-height: 130px;
+  $grid-layout-height: 140px;
   .home-container {
     .home-grid-layout {
       grid-template-rows: repeat(6, $grid-layout-height);

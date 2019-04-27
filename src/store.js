@@ -15,20 +15,28 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async getCurrentUser({ commit }, condition) {
-      let { vm, account } = condition;
+    getCurrentUser({ commit }, condition) {
 
-      // Get data from db
-      let query = await vm.$db.collection('/users').where('account', '==', account).get();
+      return new Promise(async (res, rej) => {
+        let { vm, account } = condition;
 
-      // prepare payload
-      let payload = {
-        id: query.docs[0].id,
-        data: query.docs[0].data()
-      }
+        try {
+          // Get data from db
+          let query = await vm.$db.collection('/users').where('account', '==', account).get();
 
-      // Commit.
-      commit('GETCURRENTUSER', payload);
+          // prepare payload
+          let payload = {
+            id: query.docs[0].id,
+            data: query.docs[0].data()
+          }
+
+          // Commit.
+          commit('GETCURRENTUSER', payload);
+        } catch (err) {
+          rej(err);
+        }
+        res();
+      })
     }
   }
 })
