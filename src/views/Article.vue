@@ -72,22 +72,41 @@ export default {
       });
 
       this.inputComment = '';
+    },
+    clearData() {
+      if (this.commentSubscribe) this.commentSubscribe();
+      this.article = null;
+      this.comment = '';
+      this.comment = null;
+    },
+    async getData() {
+      let docRef = this.$db.collection('/articles').doc(this.$route.path.slice(9));
+      let rawData = await docRef.get();
+      this.article = rawData.data();
+
+      let commentRaw = await docRef.collection('comments').orderBy('created', 'asc').limit(10).get();
+      this.comment = commentRaw.docs.map(d => d.data());
+
+      // Add Event
+      this.commentSubscribe = docRef.collection('comments').onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach(c => {
+          if (c.type == 'modified') this.comment.push(c.doc.data());
+        })
+      });
+    }
+  },
+  watch: {
+    $route() {
+      this.clearData();
+      this.getData();
     }
   },
   async mounted() {
-    let docRef = this.$db.collection('/articles').doc(this.$route.path.slice(9));
-    let rawData = await docRef.get();
-    this.article = rawData.data();
-
-    let commentRaw = await docRef.collection('comments').orderBy('created', 'asc').limit(10).get();
-    this.comment = commentRaw.docs.map(d => d.data());
-
-    // Add Event
-    this.commentSubscribe = docRef.collection('comments').onSnapshot((snapshot) => {
-      snapshot.docChanges().forEach(c => {
-        if (c.type == 'modified') this.comment.push(c.doc.data());
-      })
-    });
+    this.clearData();
+    this.getData();
+  },
+  beforeDestroy() {
+    this.commentSubscribe();
   }
 }
 </script>
