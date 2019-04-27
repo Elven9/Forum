@@ -73,6 +73,8 @@
 </template>
 
 <script>
+import firebase from 'firebase';
+
 export default {
   data() {
     return {
@@ -92,7 +94,7 @@ export default {
       },
       content: '',
       imgSrcs: [],
-      cover: '',
+      cover: null,
       coverInfo: {
         name: '',
         size: '',
@@ -111,28 +113,103 @@ export default {
         return;
       }
 
+      // 確認文章標題是否寫入，跟是否填入 Cover
+      if (!this.cover) {
+        console.error("Can't Submit Without Uploading Cover");
+        return;
+      }
+
+      // 確認文章標題是否寫入，跟是否填入 Cover
+      if (this.title === '') {
+        console.error("Can't Submit Without Writing Title");
+        return;
+      }
+
       // 確認使用者是否登入中
       if (!this.$firebase.auth().currentUser) {
         console.error('You Have to Login Before You Submit the Article.');
         return;
       }
 
-      // // 創建文章資料
-      // let newDoc = await this.$db.collection('articles').add({
-      //   content: this.content,
-      //   size: this.size
-      // });
+      // 創建文章資料
+      let newDoc = await this.$db.collection('articles').add({
+        content: this.content,
+        size: this.size,
+        title: this.title,
+        subTitle: this.subTitle,
+        cover: '',
+        created: firebase.firestore.FieldValue.serverTimestamp()
+      });
 
-      // // 處理 Image 文件，上傳到 Storage
-      // for (let url of this.imgSrcs) {
-        
-      // }
+      // 處理 Image 文件，上傳到 Storage
+      let dirRef = this.$storage.ref(`articles/${newDoc.id}`);
+
+      // 建立檔名
+      let _tempSplit = this.coverInfo.name.split('.');
+      let coverFileName = `cover.${_tempSplit[_tempSplit.length - 1]}`;
+
+      // Upload Cover
+      let coverRef = dirRef.child(coverFileName);
+      await coverRef.put(this.cover);
+
+      // Change Doc Cover Link
+      await newDoc.update({
+        cover: await coverRef.getDownloadURL()
+      });
+      console.log('[Info]: Cover Upload Completed.');
+
+      // Upload Img In Content
+      let promises = [];
+      for (let i = 0; i < this.imgSrcs.length; i++) {
+        promises.push(new Promise(async (res, rej) => {
+          try {
+            let url = this.imgSrcs[i];
+            let img = await fetch(url);
+            let blob = await img.blob();
+            res({ url, blob });
+          } catch (err) {
+            rej(err);
+          }
+        }));
+      }
+
+      // Process Promise.
+      let result = await Promise.all(promises);
+
+      // Upload All Image
+      let processes = [];
+      for (let i = 0; i < result.length; i++) {
+        processes.push(new Promise(async (res, rej) => {
+          try {
+            // Upload File
+            let type = result[i].blob.type === 'image/png' ? '.png' : '.jpg';
+            let imgRef = dirRef.child(`${i}${type}`);
+            await imgRef.put(result[i].blob);
+            let toReplace = await imgRef.getDownloadURL();
+            res({ url: result[i].url, toReplace });
+          } catch (err) {
+            rej(err);
+          }
+        }));
+      }
+
+      // Process promise
+      let toReplace = await Promise.all(processes);
+      console.log('[Info]: All Content Img Uploaded Completed.');
+
+      // Replace
+      for (let i = 0; i < toReplace.length; i++) {
+        this.content = this.content.replace(toReplace[i].url, toReplace[i].toReplace);
+      }
+
+      // Update Content
+      await newDoc.update({ content: this.content });
+      console.log('[Info]: Upload Completed.');
     },
     uploadFile() {
       // If Have Previous Cover, delete it.
-      if (this.cover.length !== 0) { 
-        window.URL.revokeObjectURL(this.cover);
-        this.cover = '';
+      if (this.cover) { 
+        this.cover = null;
       }
 
       // Input 設定
@@ -146,6 +223,9 @@ export default {
         let reader = new FileReader();
         let file = newInput.files[0];
 
+        // Add to cover
+        this.cover = file;
+
         // Update File Info.
         let { name, size, type } = file;
         Object.assign(this.coverInfo, {name, size, type});
@@ -154,9 +234,6 @@ export default {
 
         reader.addEventListener('load', () => {
           let fileUrl = reader.result;
-
-          // Add to cover
-          this.cover = fileUrl;
 
           // Render Image
           this.$refs['drop-area'].innerHTML = "";   // Clear Previous Text.
@@ -174,9 +251,8 @@ export default {
     },
     async initialDrop(dragEvent) {
       // If Have Previous Cover, delete it.
-      if (this.cover.length !== 0) { 
-        window.URL.revokeObjectURL(this.cover);
-        this.cover = '';
+      if (this.cover) { 
+        this.cover = null;
       }
 
       // Get Data Transfer Object
@@ -194,6 +270,9 @@ export default {
 
           if (!file) rej('Drag Item Is Not A File');
 
+          // Update to cover
+          vm.cover = file;
+
           // Update File Info.
           let { name, size, type } = file;
           Object.assign(vm.coverInfo, {name, size, type});
@@ -207,9 +286,6 @@ export default {
 
       // Get URL
       let fileUrl = await readFile();
-
-      // Update to cover
-      this.cover = fileUrl;
 
       // Render Image
       this.$refs['drop-area'].innerHTML = "";   // Clear Previous Text.
@@ -365,6 +441,11 @@ $main-color: #7c7780;
           width: 100%;
           margin: 20px 0px 20px 0px;
         }
+      }
+
+      .form-input {
+        margin-top: 15px;
+        width: 100%;
       }
     }
   }
