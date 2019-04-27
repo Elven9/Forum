@@ -8,20 +8,77 @@
       </div>
       <span class="cover-text">Cover Photo</span>
       <div class="article-content-container" v-html="article.content"></div>
+      <div v-if="comment" class="comment-container">
+        <b-card v-for="c in comment" :key="c.id">
+          <b-card-sub-title>{{ c.userName }}</b-card-sub-title>
+          <b-card-text>
+            {{ c.comment }}
+          </b-card-text>
+          <div slot="footer"><small class="text-muted">Created at {{ mapTime(c.created) }}</small></div>
+        </b-card>
+      </div>
+      <div class="comment-container">
+        <b-card>
+          <b-form-input v-model="inputComment" placeholder="輸入留言"></b-form-input>
+          <div class="button-c"><b-button :disabled="inputComment.length === 0" @click="leaveComment">輸入</b-button></div>
+          <div slot="footer"><small class="text-muted">盡情揮灑的空間</small></div>
+        </b-card>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase';
+
 export default {
   data() {
     return {
-      article: null
+      article: null,
+      inputComment: '',
+      comment: null,
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.state.userData;
+    },
+    userId() {
+      return this.$store.state.userId;
+    }
+  },
+  methods: {
+    mapTime(timestamp) {
+      return this.$moment(timestamp.toDate()).format("dddd, MMMM Do YYYY, h:mm:ss a")
+    },
+    async leaveComment() {
+      if (this.inputComment.length === 0) {
+        console.error('請輸入留言後再按輸入');
+        return;
+      };
+
+      if (!this.$firebase.auth().currentUser) {
+        console.error('請登入後再留言');
+        return;
+      }
+
+      // 上傳
+      await this.$db.collection('/articles').doc(this.$route.path.slice(9)).collection('comments').add({
+        userName: this.user.account.split('@')[0],
+        userId: this.userId,
+        comment: this.inputComment,
+        created: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      this.inputComment = '';
     }
   },
   async mounted() {
     let rawData = await this.$db.collection('/articles').doc(this.$route.path.slice(9)).get();
     this.article = rawData.data();
+
+    let commentRaw = await this.$db.collection('/articles').doc(this.$route.path.slice(9)).collection('comments').get();
+    this.comment = commentRaw.docs.map(d => d.data());
   }
 }
 </script>
@@ -79,6 +136,37 @@ export default {
       text-align: center;
       border-bottom: solid rgba(128, 128, 128, 0.5) 2px;
       padding-bottom: 20px;
+    }
+
+    .comment-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+
+      .card {
+        width: 100%;
+
+        .card-body {
+          .card-text {
+            margin-top: 5px;
+          }
+        }
+
+        .button-c {
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+
+          button {
+            margin: 10px 0px 10px 0px;
+          }
+        }
+      }
     }
   }
 }
