@@ -28,6 +28,36 @@
           </div>
         </div>
       </div>
+      <span class="title">文章標題</span>
+      <div class="form-input">
+        <b-form-group
+          label-for="title-input"
+          description="放入文章標題，會顯示在文章列表裡面與文章開頭"
+        >
+          <b-form-input
+            id="title-input"
+            v-model="title"
+            type="text"
+            required
+            placeholder="輸入標題"
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <span class="title">文章副標</span>
+      <div class="form-input">
+        <b-form-group
+          label-for="title-input-sub"
+          description="放入文章副標，會顯示在文章列表裡面與文章開頭"
+        >
+          <b-form-input
+            id="title-input-sub"
+            v-model="subTitle"
+            type="text"
+            required
+            placeholder="輸入副標題"
+          ></b-form-input>
+        </b-form-group>
+      </div>
       <span class="title">顯示樣式</span>
       <div class="button-group">
         <b-button @click="size = '1x1'">1x1</b-button>
@@ -68,7 +98,9 @@ export default {
         size: '',
         type: '',
       },
-      size: '1x1'
+      size: '1x1',
+      title: '',
+      subTitle: '',
     }
   },
   methods: {
@@ -78,8 +110,17 @@ export default {
         console.error("Can't Submit Empty Post To Server.");
         return;
       }
+
+      // 確認使用者是否登入中
+      if (!this.$firebase.auth().currentUser) {
+        console.error('You Have to Login Before You Submit the Article.');
+        return;
+      }
+
+      // // 創建文章資料
       // let newDoc = await this.$db.collection('articles').add({
-      //   content:
+      //   content: this.content,
+      //   size: this.size
       // });
 
       // // 處理 Image 文件，上傳到 Storage
@@ -273,6 +314,11 @@ $main-color: #7c7780;
           }
         }
       }
+    }
+
+    .form-input {
+      margin-top: 15px;
+      width: 80%;
     }
 
     .button-group {
