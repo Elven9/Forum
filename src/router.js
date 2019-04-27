@@ -9,10 +9,10 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/ThailandBoard'
+      redirect: '/category/ThailandBoard'
     },
     {
-      path: '/:type',
+      path: '/category/:type',
       name: 'Home 首頁',
       component: Home
     },

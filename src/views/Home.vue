@@ -2,17 +2,19 @@
   <div class="home-container">
     <div class="home-grid-layout">
       <MessageBlock
-        size="2x2"
+        v-for="m in messages"
+        :key="m.id"
+        :size="m.size"
         :position="{
           rowStart: 1,
-          rowEnd: 3,
+          rowEnd: 2,
           columnStart: 1,
           columnEnd: 3
         }"
-        title="泰式奶茶真好喝"
-        briefContent="來去泰國一定要先喝這杯道地的泰式奶茶囉～"
-        author="Retro"
-        background="https://firebasestorage.googleapis.com/v0/b/software-studio-mid-project.appspot.com/o/architecture-buildings-cars-1095901.jpg?alt=media&token=cd3b74d0-632c-48ad-99e2-8f9b35502d3c"
+        :title="m.title"
+        :briefContent="m.subTitle"
+        :author="m.author"
+        :background="m.cover"
       ></MessageBlock>
     </div>
   </div>
@@ -31,8 +33,16 @@ export default {
   components: {
     MessageBlock
   },
-  mounted() {
+  async mounted() {
+    // 向 DB 拿資料
+    let rawData = await this.$db.collection('articles').where('type', '==', this.$route.path.slice(10)).get();
     
+    // Construct Message
+    for (let q of rawData.docs) {
+      let payload = { id: q.id };
+      Object.assign(payload, q.data());
+      this.messages.push(payload);
+    }
   }
 }
 </script>
