@@ -6,6 +6,27 @@
       <dir class="detail-info">
         <span>{{ `登入中帳號：${user.account}` }}</span>
       </dir>
+      <dir class="detail-info">
+        <span>使用者發布文章</span>
+      </dir>
+      <div class="user-article-container">
+        <div v-for="m in articles" :key="m.id" class="user-article">
+          <MessageBlock
+            :id="m.id"
+            size="2x2"
+            :position="{
+              rowStart: 1,
+              rowEnd: 3,
+              columnStart: 1,
+              columnEnd: 3
+            }"
+            :title="m.title"
+            :briefContent="m.subTitle"
+            :author="m.userAccount"
+            :background="m.cover"
+          ></MessageBlock>
+        </div>
+      </div>
     </div>
     <div v-else class="user-container-logout">
       <img src="~assets/UserInfo/login.svg" alt="login">
@@ -52,17 +73,26 @@
 </template>
 
 <script>
+import MessageBlock from 'components/MessageBlock/index';
+
 export default {
+  components: {
+    MessageBlock
+  },
   data() {
     return {
       account: '',
       pass: '',
-      isLogin: false
+      isLogin: false,
+      articles: []
     }
   },
   computed: {
     user() {
       return this.$store.state.userData;
+    },
+    userId() {
+      return this.$store.state.userId;
     }
   },
   methods: {
@@ -75,9 +105,13 @@ export default {
         // Get User Content
         await this.$store.dispatch('getCurrentUser', { vm: this, account: this.account });
 
-        this.isLogin = true;
         this.account = '';
         this.pass = '';
+
+        // Get Articles
+        let rawData = await this.$db.collection('/articles').where('userId', '==', this.userId).get();
+        this.articles = rawData.docs.map(q => Object.assign({ id: q.id }, q.data()));
+        this.isLogin = true;
       } catch (err) {
         console.error(err);
         console.error('Login Failed.');
@@ -116,8 +150,8 @@ $background-color: rgba(28, 27, 30, 0.9);
 
 // Container Common Property
 @mixin user-container() {
-  height: 100%;
   width: 100%;
+  min-height: 100%;
   background-color: $background-color;
   display: flex;
   flex-direction: column;
@@ -151,6 +185,7 @@ $background-color: rgba(28, 27, 30, 0.9);
 .user-info-c {
   height: 100%;
   width: $route-slider-width;
+  overflow-y: scroll;
 
   .user-container-logout {
     @include user-container();
@@ -212,6 +247,25 @@ $background-color: rgba(28, 27, 30, 0.9);
         color: $main-color;
         font-size: 20px;
         font-weight: 300;
+      }
+    }
+
+    .user-article-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .user-article {
+        width: 100%;
+        display: grid;
+
+        // Home Panel Grid Layout
+        grid-template-columns: repeat(2, 50%);
+        grid-template-rows: repeat(2, 100px);
+
+        grid-gap: 0px 0px;
+        place-items: stretch stretch;
       }
     }
   }
