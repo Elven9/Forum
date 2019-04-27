@@ -365,9 +365,10 @@ $main-color: #7c7780;
         width: 50%;
         height: 300px;
         border: solid $main-color 2px;
-        text-align: center;
-        vertical-align: middle;
-        line-height: 300px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       .info-area {
