@@ -186,6 +186,7 @@ $background-color: rgba(28, 27, 30, 0.9);
   height: 100%;
   width: $route-slider-width;
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 
   .user-container-logout {
     @include user-container();
