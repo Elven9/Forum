@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 
 export default {
   data() {
@@ -446,6 +446,16 @@ $main-color: #7c7780;
     .editor-container {
       width: 100%;
       margin-top: 20px;
+
+      .fr-box {
+        .fr-wrapper {
+          div {
+            a {
+              display: none !important;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -35,6 +35,8 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 require('firebase/auth');
 require('firebase/storage');
+require('firebase/functions');
+require('firebase/messaging');
 
 firebase.initializeApp({
   apiKey: "AIzaSyDyaNjLk9bspxD073OOeOd4oZe1mpk1RAY",
@@ -49,6 +51,9 @@ firebase.initializeApp({
 Vue.prototype.$firebase = firebase;
 Vue.prototype.$db = firebase.firestore();
 Vue.prototype.$storage = firebase.storage();
+Vue.prototype.$functions = firebase.functions();
+
+firebase.messaging().usePublicVapidKey('BPifN0uvgDOvF2PSnf-QwkS1Sz_IFOA68nNhHGPZt6fmZbEknTFU6i2wN_mpPguLhpJgdCkC_4_6EQaTqfwYjys');
 
 // Add moment
 Vue.prototype.$moment = moment;

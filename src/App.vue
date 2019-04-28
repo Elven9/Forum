@@ -26,6 +26,8 @@
 import RouteSlider from 'components/Layout/RouteSlider';
 import UserInfo from 'components/Layout/UserInfo';
 
+import * as firebase from 'firebase/app'
+
 export default {
   data() {
     return {
@@ -66,6 +68,39 @@ export default {
     // Add Handler to Data For Destroing.
     this.resizeHandler = () => { this.windowWidth = window.innerWidth; }
     window.addEventListener('resize', this.resizeHandler);
+
+    // Cloud Messaging
+    // Add Push Notification
+    firebase.messaging().onMessage(payload => {
+      console.log(payload);
+    })
+    
+    this.$firebase.messaging().requestPermission().then(async () => {
+      console.log('Get Permission');
+      
+      // Get Token
+      let token;
+      try {
+        token = await this.$firebase.messaging().getToken();
+      } catch (err) {
+        console.error('Error When Retrieving Token', err);
+        return;
+      }
+      // Send Token Back To Server
+      try {
+        await this.$functions.httpsCallable('registedToken')({
+          token
+        })
+      } catch (err) {
+        console.error(err);
+      }
+
+      // Add Fore Ground Message Request
+
+    }).catch((err) => {
+      console.error('Unable to get permission to notify.', err);
+    })
+    window.vm = this;
   },
   beforeDestroy() {
     window.removeEventListener(this.resizeHandler);
