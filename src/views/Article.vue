@@ -204,6 +204,8 @@ export default {
 @media (max-width: 414px) {
   .article-container {
     .article-inner-container {
+      width: 90%;
+      margin: 20px 5% 0px 5%;
       .cover-container {
         height: 260px;
       }
