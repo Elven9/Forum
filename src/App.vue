@@ -71,36 +71,37 @@ export default {
 
     // Cloud Messaging
     // Add Push Notification
-    firebase.messaging().onMessage(payload => {
-      console.log(payload);
-    })
+    if (this.$isSupportMessaging) {
+      firebase.messaging().onMessage(payload => {
+        console.log(payload);
+      })
     
-    this.$firebase.messaging().requestPermission().then(async () => {
-      console.log('Get Permission');
-      
-      // Get Token
-      let token;
-      try {
-        token = await this.$firebase.messaging().getToken();
-      } catch (err) {
-        console.error('Error When Retrieving Token', err);
-        return;
-      }
-      // Send Token Back To Server
-      try {
-        await this.$functions.httpsCallable('registedToken')({
-          token
-        })
-      } catch (err) {
-        console.error(err);
-      }
+      this.$firebase.messaging().requestPermission().then(async () => {
+        console.log('Get Permission');
+        
+        // Get Token
+        let token;
+        try {
+          token = await this.$firebase.messaging().getToken();
+        } catch (err) {
+          console.error('Error When Retrieving Token', err);
+          return;
+        }
+        // Send Token Back To Server
+        try {
+          await this.$functions.httpsCallable('registedToken')({
+            token
+          })
+        } catch (err) {
+          console.error(err);
+        }
 
-      // Add Fore Ground Message Request
+        // Add Fore Ground Message Request
 
-    }).catch((err) => {
-      console.error('Unable to get permission to notify.', err);
-    })
-    window.vm = this;
+      }).catch((err) => {
+        console.error('Unable to get permission to notify.', err);
+      })
+    }
   },
   beforeDestroy() {
     window.removeEventListener(this.resizeHandler);

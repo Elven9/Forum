@@ -182,6 +182,7 @@ $grid-layout-height: 150px;
   background-color: rgb(28, 27, 30);
   overflow-y: scroll;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 
   .home-grid-layout {
     width: 100%;

@@ -53,7 +53,13 @@ Vue.prototype.$db = firebase.firestore();
 Vue.prototype.$storage = firebase.storage();
 Vue.prototype.$functions = firebase.functions();
 
-firebase.messaging().usePublicVapidKey('BPifN0uvgDOvF2PSnf-QwkS1Sz_IFOA68nNhHGPZt6fmZbEknTFU6i2wN_mpPguLhpJgdCkC_4_6EQaTqfwYjys');
+// Detect If Browser Support
+Vue.prototype.$isSupportMessaging = true;
+try {
+  firebase.messaging().usePublicVapidKey('BPifN0uvgDOvF2PSnf-QwkS1Sz_IFOA68nNhHGPZt6fmZbEknTFU6i2wN_mpPguLhpJgdCkC_4_6EQaTqfwYjys');
+} catch (err) {
+  Vue.prototype.$isSupportMessaging = false;
+}
 
 // Add moment
 Vue.prototype.$moment = moment;
