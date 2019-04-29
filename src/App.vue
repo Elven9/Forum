@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div ref="app" id="app">
     <div class="header">
       <div class="header-left">
         <div @click="toggleSlider" v-if="windowWidth <= 1024" class="route-slider-openner">
@@ -34,7 +34,7 @@ export default {
       windowWidth: window.innerWidth,
 
       // event listener
-      resizeHandler: null
+      resizeHandler: null,
     }
   },
   methods: {
@@ -101,6 +101,38 @@ export default {
       }).catch((err) => {
         console.error('Unable to get permission to notify.', err);
       })
+
+      // Add Message Functionality;
+      this.$message = (message) => {
+        // Create Element
+        // Message Container
+        let mContainerDiv = document.createElement('div');
+        mContainerDiv.classList.add('message-box');
+
+        // Message Div
+        let messageDiv = document.createElement('div');
+        
+        // Info p tag
+        let infoP = document.createElement('p');
+        infoP.innerText = message;
+
+        // Append
+        messageDiv.appendChild(infoP);
+        mContainerDiv.appendChild(messageDiv);
+
+        // Add To App
+        this.$refs.app.appendChild(mContainerDiv);
+
+        // Start Animation
+        mContainerDiv.classList.add('start-animation');
+
+        window.setTimeout(() => {
+          // Clear All Message Box
+          infoP.remove();
+          messageDiv.remove();
+          mContainerDiv.remove();
+        }, 3100)
+      }
     }
   },
   beforeDestroy() {
@@ -108,6 +140,60 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+$message-box-height: 50px;
+
+#app {
+  .message-box {
+    position: absolute;
+    top: -$message-box-height - 10px;
+    height: $message-box-height;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    animation-duration: 3s;
+
+    &.start-animation {
+      animation: show-message 3s 1;
+    }
+
+    div {
+      width: 300px;
+      height: 100%;
+      background-color: rgb(28, 27, 30);
+      border-radius: 5px;
+      box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.3), 0 6px 20px 0 rgba(255, 255, 255, 0.29);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      p {
+        color: white;
+        margin: 0px;
+      }
+    }
+  }
+}
+
+// Message Animation
+@keyframes show-message {
+  0% {
+    top: -$message-box-height - 10px;
+  }
+  20% {
+    top: 20px;
+  }
+  80% {
+    top: 20px;
+  }
+  100% {
+    top: -$message-box-height - 10px;
+  }
+}
+</style>
 
 
 <style lang="scss" scoped>
@@ -120,6 +206,8 @@ $main-color: white;
 
 #app {
   height: 100vh;
+  width: 100%;
+  position: relative;
 
   .header {
     width: 100%;

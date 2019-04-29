@@ -61,6 +61,9 @@ try {
   Vue.prototype.$isSupportMessaging = false;
 }
 
+// Add message functionality
+Vue.prototype.$message = null;
+
 // Add moment
 Vue.prototype.$moment = moment;
 
