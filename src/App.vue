@@ -2,13 +2,13 @@
   <div ref="app" id="app">
     <div class="header">
       <div class="header-left">
-        <div @click="toggleSlider" v-if="windowWidth <= 1024" class="route-slider-openner">
+        <div @click.stop="toggleSlider" v-if="windowWidth <= 1024" class="route-slider-openner">
           <img src="~/assets/Layout/open-menu-icon.svg" alt="">
         </div>
         <span class="header-tag-content">Forumas</span>
       </div>
       <div class="header-right">
-        <div @click="toggleUser" class="route-slider-openner">
+        <div @click.stop="toggleUser" class="route-slider-openner">
           <img src="~/assets/Layout/group.svg" alt="user">
         </div>
       </div>
@@ -35,6 +35,7 @@ export default {
 
       // event listener
       resizeHandler: null,
+      closeAllSidebar: null
     }
   },
   methods: {
@@ -102,9 +103,17 @@ export default {
         console.error('Unable to get permission to notify.', err);
       })
     }
+
+    // Add Window Click Event To Close Side Bar
+    this.closeAllSidebar = () => {
+      this.closeSlider();
+      this.closeUser();
+    }
+    window.addEventListener('click', this.closeAllSidebar);
   },
   beforeDestroy() {
     window.removeEventListener(this.resizeHandler);
+    window.removeEventListener(this.closeAllSidebar);
   }
 }
 </script>
@@ -113,6 +122,8 @@ export default {
 $message-box-height: 50px;
 
 #app {
+  background-color: rgb(28, 27, 30);
+
   .message-box {
     position: absolute;
     top: -$message-box-height - 10px;
