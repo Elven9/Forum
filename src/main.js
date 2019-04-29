@@ -62,7 +62,36 @@ try {
 }
 
 // Add message functionality
-Vue.prototype.$message = null;
+Vue.prototype.$message = (message) => {
+  // Create Element
+  // Message Container
+  let mContainerDiv = document.createElement('div');
+  mContainerDiv.classList.add('message-box');
+
+  // Message Div
+  let messageDiv = document.createElement('div');
+  
+  // Info p tag
+  let infoP = document.createElement('p');
+  infoP.innerText = message;
+
+  // Append
+  messageDiv.appendChild(infoP);
+  mContainerDiv.appendChild(messageDiv);
+
+  // Add To App
+  document.getElementById('app').appendChild(mContainerDiv);
+
+  // Start Animation
+  mContainerDiv.classList.add('start-animation');
+
+  window.setTimeout(() => {
+    // Clear All Message Box
+    infoP.remove();
+    messageDiv.remove();
+    mContainerDiv.remove();
+  }, 3100)
+}
 
 // Add moment
 Vue.prototype.$moment = moment;

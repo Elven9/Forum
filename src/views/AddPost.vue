@@ -138,30 +138,24 @@ export default {
     async submitPost() {
       // 確認使用者是否登入
       if (!this.userData) {
-        console.error("You Can't Submit Your Article Before You Login.");
+        this.$message("登入前不能發文喔～");
         return;
       }
       // 確認文章是否為空
       if (this.content.length === 0) {
-        console.error("Can't Submit Empty Post To Server.");
+        this.$message("請輸入內容");
         return;
       }
 
       // 確認文章標題是否寫入，跟是否填入 Cover
       if (!this.cover) {
-        console.error("Can't Submit Without Uploading Cover");
+        this.$message("請上傳封面相片");
         return;
       }
 
       // 確認文章標題是否寫入，跟是否填入 Cover
       if (this.title === '') {
-        console.error("Can't Submit Without Writing Title");
-        return;
-      }
-
-      // 確認使用者是否登入中
-      if (!this.$firebase.auth().currentUser) {
-        console.error('You Have to Login Before You Submit the Article.');
+        this.$message("請輸入標題");
         return;
       }
 

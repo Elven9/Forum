@@ -54,12 +54,12 @@ export default {
     },
     async leaveComment() {
       if (this.inputComment.length === 0) {
-        console.error('請輸入留言後再按輸入');
+        this.$message('請輸入留言後再按輸入');
         return;
       }
 
       if (!this.user) {
-        console.error('請登入後再留言');
+        this.$message('請登入後再留言');
         return;
       }
 

@@ -51,7 +51,7 @@ export default {
 
         // 確認是否合法檔案格式
         if (['image/jpeg', 'image/png'].indexOf(file.type) === -1) {
-          console.error('Only Accept Image Type Of File');
+          this.$message('檔案只接受圖片格式');
           newInput.remove();
           return;
         }
@@ -128,7 +128,11 @@ export default {
       }
 
       // Get URL
-      let fileUrl = await readFile();
+      try {
+        let fileUrl = await readFile();
+      } catch (err) {
+        this.$message('檔案只接受圖片格式')
+      }
 
       // Render Image
       this.$refs['drop-area'].innerHTML = "";   // Clear Previous Text.

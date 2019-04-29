@@ -113,8 +113,10 @@ export default {
         this.articles = rawData.docs.map(q => Object.assign({ id: q.id }, q.data()));
         this.isLogin = true;
       } catch (err) {
-        console.error(err);
-        console.error('Login Failed.');
+        if (err.code === 'auth/invalid-email') this.$message('帳號格式不符');
+        else if (err.code === 'auth/wrong-password') this.$message('密碼不正確');
+        else if (err.code === 'auth/user-not-found') this.$message('查無此使用者');
+        else this.$message('系統錯誤，請聯絡開發者');
       }
     },
     async register() {
@@ -132,7 +134,9 @@ export default {
         // Login
         this.login();
       } catch (err) {
-        console.error('Register Failed.');
+        if (err.code === 'auth/email-already-in-use') this.$message('Email 已被使用');
+        else if (err.code === 'auth/weak-password') this.$message('密碼強度不足，請嘗試一組新密碼');
+        else this.$message('註冊失敗，請聯絡管理員')
       }
     }
   },
