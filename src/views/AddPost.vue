@@ -7,11 +7,8 @@
       </div>
       <span class="title">封面圖片</span>
       <div class="drag-and-drop">
-        <div ref="drop-area" class="drop-area"
-          @drop.prevent="initialDrop"
-          @dragover.prevent
-          @click="uploadFile">
-          請放入圖片
+        <div class="drop-area">
+          <UploadImage promptMessage="請放入圖片" @imageAdded="updateCover"></UploadImage>
         </div>
         <div class="info-area">
           <div>
@@ -81,8 +78,12 @@
 
 <script>
 import firebase from 'firebase/app';
+import UploadImage from 'components/UploadImage/index';
 
 export default {
+  components: {
+    UploadImage
+  },
   data() {
     return {
       config: {
@@ -122,6 +123,10 @@ export default {
     }
   },
   methods: {
+    updateCover(event) {
+      this.cover = event.cover;
+      Object.assign(this.coverInfo, event.info);
+    },
     mapType(type) {
       let map = {
         ThailandBoard: '泰國版',
@@ -237,98 +242,6 @@ export default {
       // Update Content
       await newDoc.update({ content: this.content });
       console.log('[Info]: Upload Completed.');
-    },
-    uploadFile() {
-      // If Have Previous Cover, delete it.
-      if (this.cover) { 
-        this.cover = null;
-      }
-
-      // Input 設定
-      let newInput = document.createElement('input');
-      newInput.type = 'file';
-      newInput.accept = 'image/*';
-      newInput.size = 1;
-
-      // Add Event
-      newInput.addEventListener('change', () => {
-        let reader = new FileReader();
-        let file = newInput.files[0];
-
-        // Add to cover
-        this.cover = file;
-
-        // Update File Info.
-        let { name, size, type } = file;
-        Object.assign(this.coverInfo, {name, size, type});
-
-        reader.readAsDataURL(file);
-
-        reader.addEventListener('load', () => {
-          let fileUrl = reader.result;
-
-          // Render Image
-          this.$refs['drop-area'].innerHTML = "";   // Clear Previous Text.
-          let image = new Image();                  // Create New Image.
-          image.src = fileUrl;                      // Load Image
-          image.style.width = '100%';
-          image.style.height = 'auto';
-          image.onload = () => {
-            // Add Element to Father
-            this.$refs['drop-area'].appendChild(image);
-          }
-        })
-      })
-      newInput.click();
-    },
-    async initialDrop(dragEvent) {
-      // If Have Previous Cover, delete it.
-      if (this.cover) { 
-        this.cover = null;
-      }
-
-      // Get Data Transfer Object
-      let { dataTransfer } = dragEvent;
-      let { items } = dataTransfer;
-
-      // Referenct
-      let vm = this;
-
-      // Read File
-      function readFile() {
-        return new Promise((res, rej) => {
-          let reader = new FileReader();
-          let file = items[0].getAsFile();
-
-          if (!file) rej('Drag Item Is Not A File');
-
-          // Update to cover
-          vm.cover = file;
-
-          // Update File Info.
-          let { name, size, type } = file;
-          Object.assign(vm.coverInfo, {name, size, type});
-
-          reader.onload = () => {
-            res(reader.result);
-          }
-          reader.readAsDataURL(file);
-        })
-      }
-
-      // Get URL
-      let fileUrl = await readFile();
-
-      // Render Image
-      this.$refs['drop-area'].innerHTML = "";   // Clear Previous Text.
-      let image = new Image();                  // Create New Image.
-      image.src = fileUrl;                      // Load Image
-      image.style.width = '100%';
-      image.style.height = 'auto';
-      image.onload = () => {
-        // Add Element to Father
-        this.$refs['drop-area'].appendChild(image);
-      }
     }
   }
 }
@@ -397,11 +310,6 @@ $main-color: #7c7780;
       .drop-area {
         width: 50%;
         height: 300px;
-        border: solid $main-color 2px;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
 
       .info-area {
