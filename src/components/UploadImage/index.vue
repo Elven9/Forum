@@ -128,8 +128,9 @@ export default {
       }
 
       // Get URL
+      let fireUrl;
       try {
-        let fileUrl = await readFile();
+        await readFile();
       } catch (err) {
         this.$message('檔案只接受圖片格式')
       }

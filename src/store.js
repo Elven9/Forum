@@ -12,6 +12,10 @@ export default new Vuex.Store({
     GETCURRENTUSER(state, payload) {
       state.userData = payload.data;
       state.userId= payload.id;
+    },
+    CLEARUSERDATA(state) {
+      state.userData = null;
+      state.userId = null;
     }
   },
   actions: {

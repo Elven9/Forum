@@ -6,6 +6,7 @@
       <dir class="detail-info">
         <span>{{ `登入中帳號：${user.account}` }}</span>
       </dir>
+      <b-button @click.stop="logout">登出</b-button>
       <dir class="detail-info">
         <span>使用者發布文章</span>
       </dir>
@@ -33,14 +34,13 @@
       <span class="login-text">Login 登入</span>
       <b-button v-b-toggle.login-with-pass @click.stop>密碼登入 / 帳號註冊</b-button>
       <b-collapse id="login-with-pass">
-        <b-card>
+        <b-card @click.stop>
           <b-form-group
             label="帳號："
             label-for="account-input"
             description="請輸入所註冊的帳號"
             >
             <b-form-input
-              @click.stop
               id="account-input"
               v-model="account"
               type="email"
@@ -54,7 +54,6 @@
             description="請輸入註冊密碼"
             >
             <b-form-input
-              @click.stop
               id="pass-input"
               v-model="pass"
               type="password"
@@ -62,6 +61,11 @@
               placeholder="輸入密碼"
             ></b-form-input>
           </b-form-group>
+          <b-form-checkbox
+            v-model="isLoginPersistence"
+          >
+            記住我的資訊
+          </b-form-checkbox>
           <b-row>
             <b-col cols="6"><b-button @click.stop="login">登入</b-button></b-col>
             <b-col cols="6"><b-button @click.stop="register">註冊</b-button></b-col>
@@ -73,7 +77,9 @@
 </template>
 
 <script>
+import firebase from 'firebase/app';
 import MessageBlock from 'components/MessageBlock/index';
+import { Promise } from 'q';
 
 export default {
   components: {
@@ -84,7 +90,8 @@ export default {
       account: '',
       pass: '',
       isLogin: false,
-      articles: []
+      articles: [],
+      isLoginPersistence: false
     }
   },
   computed: {
@@ -96,21 +103,40 @@ export default {
     }
   },
   methods: {
+    getLoginUserData(user) {
+      // Get User Content
+      return new Promise(async (res, rej) => {
+        try {
+          await this.$store.dispatch('getCurrentUser', { vm: this, account: user.email });
+
+          // Get Articles
+          let rawData = await this.$db.collection('/articles').where('userId', '==', this.userId).get();
+          this.articles = rawData.docs.map(q => Object.assign({ id: q.id }, q.data()));
+
+          res();
+        } catch (err) {
+          rej(err);
+        }
+      })
+    },
+    async logout() {
+      await this.$firebase.auth().signOut();
+      this.$store.commit('CLEARUSERDATA');
+    },
     async login() {
       // 進行登入的動作
       try {
+        // Check If Persistence
+        if (this.isLoginPersistence) await this.$firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        else await this.$firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
         // Login With Firebase
         await this.$firebase.auth().signInWithEmailAndPassword(this.account, this.pass);
 
-        // Get User Content
-        await this.$store.dispatch('getCurrentUser', { vm: this, account: this.account });
+        await this.getLoginUserData(this.$firebase.auth().currentUser);
 
         this.account = '';
         this.pass = '';
-
-        // Get Articles
-        let rawData = await this.$db.collection('/articles').where('userId', '==', this.userId).get();
-        this.articles = rawData.docs.map(q => Object.assign({ id: q.id }, q.data()));
         this.isLogin = true;
       } catch (err) {
         if (err.code === 'auth/invalid-email') this.$message('帳號格式不符');
@@ -129,9 +155,8 @@ export default {
         await this.$db.collection('/users').add({
           account: this.account,
           avatar: ''
-        })
+        });
 
-        // Login
         this.login();
       } catch (err) {
         if (err.code === 'auth/email-already-in-use') this.$message('Email 已被使用');
@@ -140,9 +165,18 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     // 確認目前使用者有無登入
-    if (this.$firebase.auth().currentUser) this.isLogin = true;
+    this.$firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        // User is signed in.
+        await this.getLoginUserData(user);
+        this.isLogin = true;
+      } else {
+        // No user is signed in.
+        this.isLogin = false;
+      }
+    });
   }
 }
 </script>
@@ -186,6 +220,15 @@ $background-color: rgba(28, 27, 30, 0.9);
   }
 }
 
+@mixin full-width-button-style() {
+  button {
+    background-color: $background-color;
+    color: $main-color;
+    width: 80%;
+    margin: 10px 0px 10px 0px;
+  }
+}
+
 .user-info-c {
   height: 100%;
   width: $route-slider-width;
@@ -207,12 +250,7 @@ $background-color: rgba(28, 27, 30, 0.9);
       color: $main-color;
     }
 
-    button {
-      background-color: $background-color;
-      color: $main-color;
-      width: 80%;
-      margin: 10px 0px 10px 0px;
-    }
+    @include full-width-button-style();
 
     #login-with-pass {
       @include collapse-style();
@@ -254,6 +292,8 @@ $background-color: rgba(28, 27, 30, 0.9);
         font-weight: 300;
       }
     }
+
+    @include full-width-button-style();
 
     .user-article-container {
       display: flex;
