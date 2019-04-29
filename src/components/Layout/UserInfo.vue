@@ -1,7 +1,13 @@
 <template>
   <div class="user-info-c">
     <div v-if="isLogin" class="user-container-login">
-      <div v-if="user.avatar !== ''" class="avatar-container"><img :src="user.avatar" alt="avatar"></div>
+      <div class="avatar-container">
+        <img v-if="user.avatar !== ''" :src="user.avatar" alt="avatar">
+        <UploadImage v-else 
+          promptMessage="請上傳大頭貼"
+          @imageAdded="uploadAvatar">
+        </UploadImage>
+      </div>
       <span class="name-text">{{ `${user.account.split('@')[0]}, 歡迎光臨` }}</span>
       <dir class="detail-info">
         <span>{{ `登入中帳號：${user.account}` }}</span>
@@ -79,11 +85,12 @@
 <script>
 import firebase from 'firebase/app';
 import MessageBlock from 'components/MessageBlock/index';
-import { Promise } from 'q';
+import UploadImage from 'components/UploadImage/index';
 
 export default {
   components: {
-    MessageBlock
+    MessageBlock,
+    UploadImage
   },
   data() {
     return {
@@ -103,6 +110,23 @@ export default {
     }
   },
   methods: {
+    async uploadAvatar(event) {
+      // 上傳圖片
+      let _fileSplit = event.info.name.split('.')
+      let fileType = _fileSplit[_fileSplit.length - 1];
+      let avatarRef = this.$storage.ref(`/user-avatar`).child(`${this.userId}.${fileType}`);
+      await avatarRef.put(event.cover);
+
+      // 更新 DB 連結
+      let avatarUrl = await avatarRef.getDownloadURL();
+      await this.$db.collection('users').doc(this.userId).update({
+        avatar: avatarUrl,
+        avatarLocation: `${this.userId}.${fileType}`
+      });
+
+      // 更新 User Info
+      this.$store.commit('SETUSERDATA', { avatar: avatarUrl });
+    },
     getLoginUserData(user) {
       // Get User Content
       return new Promise(async (res, rej) => {
@@ -262,6 +286,7 @@ $background-color: rgba(28, 27, 30, 0.9);
 
     .avatar-container {
       margin-top: 30px;
+      height: 200px;
       width: 80%;
       border-radius: 10px;
       overflow: hidden;

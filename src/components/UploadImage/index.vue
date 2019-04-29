@@ -2,7 +2,7 @@
   <div ref="drop-area" class="uploader"
     @drop.prevent="initialDrop"
     @dragover.prevent
-    @click="uploadFile">
+    @click.stop="uploadFile">
     {{ promptMessage }}
   </div>
 </template>
@@ -128,9 +128,9 @@ export default {
       }
 
       // Get URL
-      let fireUrl;
+      let fileUrl;
       try {
-        await readFile();
+        fileUrl = await readFile();
       } catch (err) {
         this.$message('檔案只接受圖片格式')
       }
@@ -162,5 +162,6 @@ $main-color: #7c7780;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white;
 }
 </style>

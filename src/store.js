@@ -16,6 +16,9 @@ export default new Vuex.Store({
     CLEARUSERDATA(state) {
       state.userData = null;
       state.userId = null;
+    },
+    SETUSERDATA(state, payload) {
+      Object.assign(state.userData, payload);
     }
   },
   actions: {
