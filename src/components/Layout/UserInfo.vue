@@ -1,6 +1,7 @@
 <template>
   <div class="user-info-c">
     <div v-if="isLogin" class="user-container-login">
+      <span class="name-text">{{ `${user.account.split('@')[0]}, 歡迎光臨` }}</span>
       <div class="avatar-container">
         <img v-if="user.avatar !== ''" :src="user.avatar" alt="avatar">
         <UploadImage v-else 
@@ -8,10 +9,10 @@
           @imageAdded="uploadAvatar">
         </UploadImage>
       </div>
-      <span class="name-text">{{ `${user.account.split('@')[0]}, 歡迎光臨` }}</span>
       <dir class="detail-info">
         <span>{{ `登入中帳號：${user.account}` }}</span>
       </dir>
+      <b-button v-if="user.avatar" @click.stop="changeAvatar">更換大頭貼</b-button>
       <b-button @click.stop="logout">登出</b-button>
       <dir class="detail-info">
         <span>使用者發布文章</span>
@@ -110,6 +111,20 @@ export default {
     }
   },
   methods: {
+    changeAvatar() {
+      // Delete Current User Avatar
+      let avatarRef = this.$storage.ref('/user-avatar').child(this.user.avatarLocation);
+      avatarRef.delete();
+
+      // Update DB Data
+      this.$db.collection('users').doc(this.userId).update({
+        avatar: '',
+        avatarLocation: ''
+      })
+
+      // 更新 User Info
+      this.$store.commit('SETUSERDATA', { avatar: '', avatarLocation: '' });
+    },
     async uploadAvatar(event) {
       // 上傳圖片
       let _fileSplit = event.info.name.split('.')
@@ -285,11 +300,14 @@ $background-color: rgba(28, 27, 30, 0.9);
     @include user-container();
 
     .avatar-container {
-      margin-top: 30px;
-      height: 200px;
+      margin-top: 20px;
+      height: 150px;
       width: 80%;
-      border-radius: 10px;
+      border-radius: 5px;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       img {
         width: 100%;
@@ -298,7 +316,7 @@ $background-color: rgba(28, 27, 30, 0.9);
     }
 
     .name-text {
-      margin-top: 10px;
+      margin-top: 20px;
       font-size: 32px;
       color: $main-color;
     }
