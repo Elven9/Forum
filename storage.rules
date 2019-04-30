@@ -1,6 +1,13 @@
-service firebase.storage {  
-  match /articles/{userUid}/{articleId}/{image} {
-  	allow write: if request.auth.uid == userUid;
-    allow read;
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Files look like: "user/<UID>/path/to/file.txt"
+    match /articles/{user_uid}/{allPaths=**} {
+      allow write: if request.auth != null && request.auth.uid == user_uid;
+      allow read;
+    }
+    
+    match /user/{user_uid}/{allPath=**} {
+    	allow read, write: if request.auth != null && request.auth.uid == user_uid;
+    }
   }
 }

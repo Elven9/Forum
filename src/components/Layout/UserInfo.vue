@@ -113,7 +113,8 @@ export default {
   methods: {
     changeAvatar() {
       // Delete Current User Avatar
-      let avatarRef = this.$storage.ref('/user-avatar').child(this.user.avatarLocation);
+      let userUid = this.$firebase.auth().currentUser.uid;
+      let avatarRef = this.$storage.ref(`/user/${userUid}`).child(this.user.avatarLocation);
       avatarRef.delete();
 
       // Update DB Data
@@ -126,17 +127,20 @@ export default {
       this.$store.commit('SETUSERDATA', { avatar: '', avatarLocation: '' });
     },
     async uploadAvatar(event) {
-      // 上傳圖片
+      // 整理資料
+      let userUid = this.$firebase.auth().currentUser.uid;
       let _fileSplit = event.info.name.split('.')
       let fileType = _fileSplit[_fileSplit.length - 1];
-      let avatarRef = this.$storage.ref(`/user-avatar`).child(`${this.userId}.${fileType}`);
+
+      // 上傳圖片
+      let avatarRef = this.$storage.ref(`/user/${userUid}`).child(`avatar.${fileType}`);
       await avatarRef.put(event.cover);
 
       // 更新 DB 連結
       let avatarUrl = await avatarRef.getDownloadURL();
       await this.$db.collection('users').doc(this.userId).update({
         avatar: avatarUrl,
-        avatarLocation: `${this.userId}.${fileType}`
+        avatarLocation: `avatar.${fileType}`
       });
 
       // 更新 User Info
