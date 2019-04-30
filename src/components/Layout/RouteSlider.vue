@@ -21,7 +21,7 @@ export default {
     return {
       routeList: [
         { name: '泰國版', icon: home, link: '/category/ThailandBoard' },
-        { name: '台灣版', icon: home, link: '/category/TaiwanBoard' },
+        { name: '美食版', icon: home, link: '/category/FoodBoard' },
         { name: 'Gossip 版', icon: home, link: '/category/Gossip' },
         { name: '新增文章', icon: write, link: '/addPost' },
       ]
