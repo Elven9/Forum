@@ -158,6 +158,8 @@ export default {
         this.$message("請輸入標題");
         return;
       }
+      // 開始上傳
+      this.$message('文章上傳中...');
 
       // 使用者 UID
       let userUid = this.$firebase.auth().currentUser.uid;
@@ -239,6 +241,9 @@ export default {
         content: this.content,
         cover: await coverRef.getDownloadURL()
       });
+
+      // 結束上傳
+      this.$message('文章上傳成功！');
       console.log('[Info]: Upload Completed.');
     }
   }
