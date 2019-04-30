@@ -177,10 +177,6 @@ export default {
         await this.$firebase.auth().signInWithEmailAndPassword(this.account, this.pass);
 
         await this.getLoginUserData(this.$firebase.auth().currentUser);
-
-        this.account = '';
-        this.pass = '';
-        this.isLogin = true;
       } catch (err) {
         if (err.code === 'auth/invalid-email') this.$message('帳號格式不符');
         else if (err.code === 'auth/wrong-password') this.$message('密碼不正確');
@@ -197,10 +193,21 @@ export default {
         // Add User Data to DB
         await this.$db.collection('/users').add({
           account: this.account,
-          avatar: ''
+          avatar: '',
+          avatarLocation: '',
+          userUid: this.$firebase.auth().currentUser.uid
         });
 
-        this.login();
+        // Check If Persistence
+        if (this.isLoginPersistence) await this.$firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        else await this.$firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
+        // Get Data
+        await this.getLoginUserData(this.$firebase.auth().currentUser);
+        
+        this.account = '';
+        this.pass = '';
+        this.isLogin = true;
       } catch (err) {
         if (err.code === 'auth/email-already-in-use') this.$message('Email 已被使用');
         else if (err.code === 'auth/weak-password') this.$message('密碼強度不足，請嘗試一組新密碼');
@@ -347,6 +354,7 @@ $background-color: rgba(28, 27, 30, 0.9);
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      width: 100%;
 
       .user-article {
         width: 100%;
