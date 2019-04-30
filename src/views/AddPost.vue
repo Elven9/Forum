@@ -3,7 +3,7 @@
     <div class="main-container">
       <div class="editor-header">
         <span class="title">新增文章</span>
-        <div class="submit-button"><b-button @click="submitPost">確認送出</b-button></div>
+        <div class="submit-button"><b-button :disabled="!isSubmitable" @click="submitPost">確認送出</b-button></div>
       </div>
       <span class="title">封面圖片</span>
       <div class="drag-and-drop">
@@ -100,6 +100,7 @@ export default {
           }
         }
       },
+      isSubmitable: true,
       content: '',
       imgSrcs: [],
       cover: null,
@@ -136,26 +137,31 @@ export default {
       return map[type];
     },
     async submitPost() {
+      this.isSubmitable = false;
       // 確認使用者是否登入
       if (!this.userData) {
         this.$message("登入前不能發文喔～");
+        this.isSubmitable = true;
         return;
       }
       // 確認文章是否為空
       if (this.content.length === 0) {
         this.$message("請輸入內容");
+        this.isSubmitable = true;
         return;
       }
 
       // 確認文章標題是否寫入，跟是否填入 Cover
       if (!this.cover) {
         this.$message("請上傳封面相片");
+        this.isSubmitable = true;
         return;
       }
 
       // 確認文章標題是否寫入，跟是否填入 Cover
       if (this.title === '') {
         this.$message("請輸入標題");
+        this.isSubmitable = true;
         return;
       }
       // 開始上傳
@@ -244,6 +250,7 @@ export default {
 
       // 結束上傳
       this.$message('文章上傳成功！');
+      this.isSubmitable = true;
       console.log('[Info]: Upload Completed.');
     }
   }
@@ -273,12 +280,12 @@ $main-color: #7c7780;
 
     .title {
       font-size: 24px;
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
     .editor-header {
       width: 100%;
-      margin: 20px 0px 20px 0px;
+      margin: 15px 0px 20px 0px;
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -287,6 +294,7 @@ $main-color: #7c7780;
       .title {
         flex-grow: 10;
         font-size: 36px;
+        margin: 0px;
       }
       
       .submit-button {
@@ -338,8 +346,12 @@ $main-color: #7c7780;
     }
 
     .form-input {
-      margin-top: 15px;
+      margin: 10px 0px 0px 0px;
       width: 80%;
+
+      .form-group {
+        margin: 0px;
+      }
     }
 
     .button-group {
@@ -375,10 +387,11 @@ $main-color: #7c7780;
 @media (max-width: 414px) {
   .add-post-container {
     .main-container {
-      margin-top: 20px;
+      margin: 20px 5% 30px 5%;
+      width: 90%;
 
       .editor-header {
-        margin: 0px 0px 20px 0px;
+        margin: 0px 0px 10px 0px;
       }
 
       .drag-and-drop {

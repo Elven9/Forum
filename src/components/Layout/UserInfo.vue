@@ -125,8 +125,11 @@ export default {
 
       // 更新 User Info
       this.$store.commit('SETUSERDATA', { avatar: '', avatarLocation: '' });
+      this.$message('大頭貼刪除成功！');
     },
     async uploadAvatar(event) {
+      this.$message('開始上傳大頭貼');
+
       // 整理資料
       let userUid = this.$firebase.auth().currentUser.uid;
       let _fileSplit = event.info.name.split('.')
@@ -145,6 +148,7 @@ export default {
 
       // 更新 User Info
       this.$store.commit('SETUSERDATA', { avatar: avatarUrl });
+      this.$message('大頭貼上傳成功！');
     },
     getLoginUserData(user) {
       // Get User Content
@@ -275,7 +279,14 @@ $background-color: rgba(28, 27, 30, 0.9);
     background-color: $background-color;
     color: $main-color;
     width: 80%;
-    margin: 10px 0px 10px 0px;
+    margin: 10px 10% 10px 10%;
+  }
+
+  @media (max-width: 414px) {
+    button {
+      width: 90%;
+      margin: 10px 5% 10px 5%;
+    }
   }
 }
 
