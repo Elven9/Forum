@@ -131,7 +131,7 @@ export default {
     mapType(type) {
       let map = {
         ThailandBoard: '泰國版',
-        TaiwanBoard: '台灣版',
+        FoodBoard: '美食版',
         Gossip: 'Gossip 版'
       }
       return map[type];
@@ -252,6 +252,9 @@ export default {
       this.$message('文章上傳成功！');
       this.isSubmitable = true;
       console.log('[Info]: Upload Completed.');
+
+      // To Board
+      this.$router.push(`/category/${this.type}`);
     }
   }
 }
