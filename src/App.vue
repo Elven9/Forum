@@ -74,7 +74,7 @@ export default {
     // Add Push Notification
     if (this.$isSupportMessaging) {
       firebase.messaging().onMessage(payload => {
-        const { body, title } = payload.data;
+        const { body } = payload.data;
         const data = JSON.parse(body);
         
         // Create Notification

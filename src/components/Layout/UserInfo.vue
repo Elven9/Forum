@@ -1,7 +1,8 @@
 <template>
   <div class="user-info-c">
     <div v-if="isLogin" class="user-container-login">
-      <span class="name-text">{{ `${user.account.split('@')[0]}, 歡迎光臨` }}</span>
+      <span class="name-text">{{ `${user.account.split('@')[0]},` }}</span>
+      <span class="name-text">歡迎光臨</span>
       <div class="avatar-container">
         <img v-if="user.avatar !== ''" :src="user.avatar" alt="avatar">
         <UploadImage v-else 
@@ -76,6 +77,7 @@
           <b-row>
             <b-col cols="6"><b-button @click.stop="login">登入</b-button></b-col>
             <b-col cols="6"><b-button @click.stop="register">註冊</b-button></b-col>
+            <b-col cols="12"><b-button @click.stop="loginWithGoogle">GOOGLE 登入</b-button></b-col>
           </b-row>
         </b-card>
       </b-collapse>
@@ -165,6 +167,39 @@ export default {
           rej(err);
         }
       })
+    },
+    async loginWithGoogle() {
+      // Create Provider
+      let googleProvider = new firebase.auth.GoogleAuthProvider();
+
+      // Check If Persistence
+      if (this.isLoginPersistence) await this.$firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      else await this.$firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+      
+      // Login With Google Popup
+      try {
+        let user = await this.$firebase.auth().signInWithPopup(googleProvider);
+        user = user.user;
+
+        // Test If Have User Data
+        let result = await this.$db.collection('/users').where('userUid', '==', user.uid).get();
+        if (result.docs.length === 0) {
+          // Add User Data to DB
+          await this.$db.collection('/users').add({
+            account: user.email,
+            avatar: '',
+            avatarLocation: '',
+            userUid: user.uid
+          });
+        }
+
+        // Get Data
+        await this.getLoginUserData(this.$firebase.auth().currentUser);
+        
+        this.isLogin = true;
+      } catch (err) {
+        console.error(err);
+      }
     },
     async logout() {
       await this.$firebase.auth().signOut();
@@ -341,6 +376,9 @@ $background-color: rgba(28, 27, 30, 0.9);
       margin-top: 20px;
       font-size: 32px;
       color: $main-color;
+      width: 90%;
+      text-overflow: ellipsis;
+      text-align: center;
     }
 
     .detail-info {
