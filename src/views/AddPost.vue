@@ -159,8 +159,12 @@ export default {
         return;
       }
 
+      // 使用者 UID
+      let userUid = this.$firebase.auth().currentUser.uid;
+
       // 創建文章資料
       let newDoc = await this.$db.collection('articles').add({
+        userUid,
         userId: this.userId,
         userAccount: this.userData.account,
         content: this.content,
@@ -173,7 +177,7 @@ export default {
       });
 
       // 處理 Image 文件，上傳到 Storage
-      let dirRef = this.$storage.ref(`articles/${newDoc.id}`);
+      let dirRef = this.$storage.ref(`articles/${userUid}/${newDoc.id}`);
 
       // 建立檔名
       let _tempSplit = this.coverInfo.name.split('.');
