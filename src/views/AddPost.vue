@@ -167,7 +167,7 @@ export default {
         userUid,
         userId: this.userId,
         userAccount: this.userData.account,
-        content: this.content,
+        content: '',
         size: this.size,
         title: this.title,
         subTitle: this.subTitle,
@@ -187,13 +187,10 @@ export default {
       let coverRef = dirRef.child(coverFileName);
       await coverRef.put(this.cover);
 
-      // Change Doc Cover Link
-      await newDoc.update({
-        cover: await coverRef.getDownloadURL()
-      });
       console.log('[Info]: Cover Upload Completed.');
 
       // Upload Img In Content
+      // Get Blob Object and Original Url
       let promises = [];
       for (let i = 0; i < this.imgSrcs.length; i++) {
         promises.push(new Promise(async (res, rej) => {
@@ -216,7 +213,7 @@ export default {
       for (let i = 0; i < result.length; i++) {
         processes.push(new Promise(async (res, rej) => {
           try {
-            // Upload File
+            // Upload File and Get Real Url
             let type = result[i].blob.type === 'image/png' ? '.png' : '.jpg';
             let imgRef = dirRef.child(`${i}${type}`);
             await imgRef.put(result[i].blob);
@@ -237,8 +234,11 @@ export default {
         this.content = this.content.replace(toReplace[i].url, toReplace[i].toReplace);
       }
 
-      // Update Content
-      await newDoc.update({ content: this.content });
+      // Update Content And Cover Url
+      await newDoc.update({
+        content: this.content,
+        cover: await coverRef.getDownloadURL()
+      });
       console.log('[Info]: Upload Completed.');
     }
   }
