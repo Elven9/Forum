@@ -65,7 +65,7 @@
       <span class="title">文章分類</span>
       <div class="button-group">
         <b-button @click="type = 'ThailandBoard'">泰國版</b-button>
-        <b-button @click="type = 'TaiwanBoard'">台灣版</b-button>
+        <b-button @click="type = 'FoodBoard'">美食版</b-button>
         <b-button @click="type = 'Gossip'">Gossip 版</b-button>
         <span>目前選擇：{{ mapType(type) }}</span>
       </div>
