@@ -16,11 +16,14 @@ const messaging = firebase.messaging();
 
 messaging.setBackgroundMessageHandler(function(payload) {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // json load
+  let data = JSON.parse(payload)
+
   // Customize notification here
-  var notificationTitle = 'Background Message Title';
+  var notificationTitle = `${data.author} 發佈了 ${data.title}！`;
   var notificationOptions = {
-    body: 'Background Message body.',
-    icon: '/firebase-logo.png'
+    body: data.subTitle,
+    icon: '/social-media.png'
   };
 
   return self.registration.showNotification(notificationTitle,

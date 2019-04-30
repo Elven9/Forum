@@ -10,14 +10,21 @@ admin.initializeApp();
 //  response.send("Hello from Firebase!");
 // });
 
-exports.pushNotificationArticle = functions.firestore.document('articles/{articleId}').onCreate(async snap => {
-  let newData = snap.data();
+exports.pushNotificationArticle = functions.firestore.document('articles/{articleId}').onUpdate(async change => {
+  let rawData = change.after.data();
+
+  // 整理資料
+  let newData = {
+    author: rawData.userAccount.split('@')[0],
+    title: rawData.title,
+    subTitle: rawData.subTitle
+  }
 
   // Push Notification
   admin.messaging().send({
-    notification: {
+    data: {
       title: `New Article ${ newData.title } Have Been Released.`,
-      body: newData.subTitle,
+      body: JSON.stringify(newData),
     },
     topic: 'articles'
   }).then(() => { console.log(`Sucessfully Send Message`) }).catch((err) => { console.error(err) });

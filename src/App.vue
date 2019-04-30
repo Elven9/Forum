@@ -74,7 +74,17 @@ export default {
     // Add Push Notification
     if (this.$isSupportMessaging) {
       firebase.messaging().onMessage(payload => {
-        console.log(payload);
+        const { body, title } = payload.data;
+        const data = JSON.parse(body);
+        
+        // Create Notification
+        let notification = new Notification(`${data.author} 發佈了 ${data.title}！`, {
+          icon: '/social-media.png',
+          body: data.subTitle
+        });
+
+        // Close After three seconds
+        window.setTimeout(() => { notification.close() }, 3000);
       })
     
       this.$firebase.messaging().requestPermission().then(async () => {
