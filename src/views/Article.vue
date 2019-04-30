@@ -6,7 +6,7 @@
       <div class="cover-container">
         <img :src="article.cover" alt="cover">
       </div>
-      <span class="cover-text">Cover Photo</span>
+      <span class="cover-text">{{ article.subTitle }}</span>
       <div class="article-content-container" v-html="article.content"></div>
       <div v-if="comment" class="comment-container">
         <b-card v-for="c in comment" :key="c.id">
@@ -164,7 +164,8 @@ export default {
       width: 100%;
       text-align: center;
       border-bottom: solid rgba(128, 128, 128, 0.5) 2px;
-      padding-bottom: 20px;
+      margin: 10px 0px 0px 0px;
+      padding-bottom: 10px;
     }
 
     .comment-container {

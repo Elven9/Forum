@@ -17,7 +17,7 @@ const messaging = firebase.messaging();
 messaging.setBackgroundMessageHandler(function(payload) {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
   // json load
-  let data = JSON.parse(payload)
+  let data = JSON.parse(payload.data)
 
   // Customize notification here
   var notificationTitle = `${data.author} 發佈了 ${data.title}！`;
